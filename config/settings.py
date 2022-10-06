@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'mailings.apps.MailingsConfig',
     'resumes.apps.ResumesConfig',
     'vacancies.apps.VacanciesConfig',
+    'user.apps.UserConfig',
 ]
 
 MIDDLEWARE = [
