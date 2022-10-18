@@ -1,3 +1,9 @@
 from django.contrib import admin
+from .models.role import Roles
+from .models.tags import Tags
+from .models.user import User
 
-# Register your models here.
+
+admin.site.register(Roles)
+admin.site.register(Tags)
+admin.site.register(User)

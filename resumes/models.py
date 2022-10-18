@@ -1,5 +1,5 @@
 from django.db import models
-from user.models.user import Users
+from user.models.user import User
 
 
 class Resumes(models.Model):
@@ -9,5 +9,5 @@ class Resumes(models.Model):
     experience = models.TextField(blank=True, verbose_name="Experience",)
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
-    creator_id = models.ForeignKey(Users, on_delete=models.CASCADE, verbose_name="Creator")
+    creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
 
