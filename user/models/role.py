@@ -1,6 +1,7 @@
 from django.db import models
 from user.models.user import Users
 
+
 class Roles(models.Model):
     title = models.CharField(max_length=50, verbose_name="Role")
 

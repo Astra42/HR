@@ -1,6 +1,7 @@
 from django.db import models
 from user.models.user import Users
-# Create your models here.
+
+
 class Resumes(models.Model):
     title = models.CharField(max_length=50, verbose_name="Title")
     is_published = models.BooleanField(default=True, verbose_name="Is published")
