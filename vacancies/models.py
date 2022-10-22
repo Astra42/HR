@@ -10,3 +10,6 @@ class Vacansies(models.Model):
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
     creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
     resumes = models.ManyToManyField(Resumes, blank=True)
+    
+    class Meta:
+        ordering = ["-created_date", "updated_date"]
