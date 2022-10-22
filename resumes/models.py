@@ -10,4 +10,7 @@ class Resumes(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
     creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
+    
+    class Meta:
+        ordering = ["-created_date", "updated_date"]
 
