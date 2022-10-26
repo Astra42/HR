@@ -2,7 +2,7 @@ from django.db import models
 from user.models.user import User
 
 
-class Resumes(models.Model):
+class Resume(models.Model):
     title = models.CharField(max_length=50, verbose_name="Title")
     is_published = models.BooleanField(default=True, verbose_name="Is published")
     description = models.TextField(verbose_name="Description",)
@@ -13,4 +13,5 @@ class Resumes(models.Model):
     
     class Meta:
         ordering = ["-created_date", "updated_date"]
-
+        verbose_name = 'resume'
+        verbose_name_plural = 'resumes'

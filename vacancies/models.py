@@ -1,7 +1,7 @@
 from resumes.models import *
 
 
-class Vacansies(models.Model):
+class Vacancy(models.Model):
     title = models.CharField(max_length=50, verbose_name="Title")
     is_published = models.BooleanField(default=True, verbose_name="Is published")
     description = models.TextField(verbose_name="Description",)
@@ -9,7 +9,12 @@ class Vacansies(models.Model):
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
     creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
-    resumes = models.ManyToManyField(Resumes, blank=True)
+    resumes = models.ManyToManyField(Resume, blank=True)
     
     class Meta:
         ordering = ["-created_date", "updated_date"]
+        verbose_name = 'vacancy'
+        verbose_name_plural = 'vacancies'
+
+    def __str__(self):
+        return str(self.pk) + self.title
