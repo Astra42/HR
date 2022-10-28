@@ -10,8 +10,8 @@ from user.models.tags import Tag
 
 class Profile(models.Model):
     user = models.OneToOneField(get_user_model(), on_delete=models.CASCADE, unique=True)
-    photo = models.ImageField(upload_to="photo/%Y/%m/%d/", verbose_name="Фото")
-    roles = models.ManyToManyField(Role, default='employee')
+    photo = models.ImageField(upload_to="photo/%Y/%m/%d/", verbose_name="Фото", blank=True)
+    roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
 
     class Meta():
