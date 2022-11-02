@@ -20,6 +20,7 @@ class ProfileInline(admin.StackedInline):
     list_display = ('get_photo_to_list', )
     filter_horizontal = ('roles', 'tags')
     fields = (
+        "is_verified",
         "photo",
         "get_photo",
         "roles",

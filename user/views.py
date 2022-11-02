@@ -1,27 +1,44 @@
-from django.contrib.auth.models import User
-from django.urls import reverse
-from django.contrib.sites.shortcuts import get_current_site
-from django.core.mail import send_mail
+import jwt
 from rest_framework.permissions import AllowAny
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework import generics, status
+from rest_framework import generics, status, views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView
-from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from .serializers import NewTokenObtainPairSerializer, ChangePasswordSerializer, RegisterSerializer
+from config import settings
+from .serializers import *
 from .utils import Util
+from .models.user import Profile
 
 
-class NewObtainTokenPairView(TokenObtainPairView):
+# class LoginView(TokenObtainPairView):
+#     '''
+#         Login by validating the entered data by login or email.
+#     '''
+#
+#     permission_classes = (AllowAny,)
+#     serializer_class = LoginSerializer
+
+
+class LoginView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
-    serializer_class = NewTokenObtainPairSerializer
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        user = request.data
+        serializer = self.serializer_class(data=user)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class RegisterView(generics.GenericAPIView):
+    '''
+        Register user, end send verify on email.
+    '''
+
     queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
@@ -32,66 +49,75 @@ class RegisterView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         user_data = serializer.data
-        user = User.objects.get(email=user_data['email'])
 
-        token = RefreshToken.for_user(user).access_token
-
-        current_site = get_current_site(request).domain
-        relative_link = reverse('email_verify')
-        absurl = 'http://' + current_site + relative_link + "?token=" + str(token)
-        email_body = 'Hi, ' + user.username + '!\nUse link to verify your email. \n' + absurl
-        data = {
-            'email_body': email_body,
-            'to_email': user.email,
-            'email_subject': 'Verify your email'}
-
-        for key, el in data.items():
-            print(key + ':' + el)
-
-        # send_mail(
-        #     subject='Verify your email',
-        #     message=email_body,
-        #     from_email='Denns2002@yandex.ru',
-        #     recipient_list=[user.email],
-        #     fail_silently=False
-        # )
-        Util.send_email(data)
+        Util.send_email(user_data, request)
 
         return Response(user_data, status=status.HTTP_201_CREATED)
 
 
-class VerifyEmail(generics.GenericAPIView):
-    def get(self):
-        pass
+class VerifyEmail(views.APIView):
+    '''
+        Gives the user information about the confirmation mail.
+        Gives a refresh token to send here POST.
+    '''
+
+    serializer_class = EmailVerificationSerializer
+
+    def get(self, request):
+        token = request.GET.get('token')
+        print(token)
+        try:
+            payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+            print(payload)
+            profile = Profile.objects.get(user_id=payload['user_id'])
+            if not profile.is_verified:
+                profile.is_verified = True
+                profile.save()
+
+            return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+        except jwt.ExpiredSignatureError as identifer:
+            return Response({'error': 'Activation Expired. Login and we will send you a confirmation email again.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        except jwt.exceptions.DecodeError as identifer:
+            return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ChangePasswordView(UpdateAPIView):
-        serializer_class = ChangePasswordSerializer
-        model = User
+    '''
+        Changing password with:
+        [ Old password ]
+        [ New password ]
+        [ Confirm new password ]
+    '''
+    serializer_class = ChangePasswordSerializer
+    model = User
 
-        def get_object(self, queryset=None):
-            return self.request.user
+    def get_object(self, queryset=None):
+        return self.request.user
 
-        def update(self, request, *args, **kwargs):
-            self.object = self.get_object()
-            serializer = self.get_serializer(data=request.data)
+    def update(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        serializer = self.get_serializer(data=request.data)
 
-            if serializer.is_valid():
-                self.object.set_password(serializer.data.get("new_password"))
-                self.object.save()
-                response = {
-                    'status': 'success',
-                    'code': status.HTTP_200_OK,
-                    'message': 'Password updated successfully',
-                    'data': []
-                }
+        if serializer.is_valid():
+            self.object.set_password(serializer.data.get("new_password"))
+            self.object.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': []
+            }
 
-                return Response(response)
+            return Response(response)
 
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
+    '''
+        Adds refresh token to black list = Logout
+    '''
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
