@@ -1,6 +1,5 @@
 import jwt
 from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics, status, views
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import UpdateAPIView
@@ -12,15 +11,6 @@ from config import settings
 from .serializers import *
 from .utils import Util
 from .models.user import Profile
-
-
-# class LoginView(TokenObtainPairView):
-#     '''
-#         Login by validating the entered data by login or email.
-#     '''
-#
-#     permission_classes = (AllowAny,)
-#     serializer_class = LoginSerializer
 
 
 class LoginView(generics.GenericAPIView):
