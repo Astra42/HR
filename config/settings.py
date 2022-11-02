@@ -180,10 +180,25 @@ SIMPLE_JWT = {
 
 DJOSER = {
     'SEND_ACTIVATION_EMAIL': True,
-    # 'SEND_CONFIRMATION_EMAIL': True,
+    'SEND_CONFIRMATION_EMAIL': True,
     'ACTIVATION_URL': 'auth/activate/{uid}/{token}/',
     'PASSWORD_RESET_SHOW_EMAIL_NOT_FOUND': True,
     'PASSWORD_RESET_CONFIRM_URL': 'auth/reset/confirm/{uid}/{token}/',
     'TOKEN_MODEL': None,
 
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'Denns2002'
+EMAIL_HOST_PASSWORD = 'lujukxqmltgjvyza'
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+
+# EMAIL_HOST = 'smtp.mail.ru'
+# EMAIL_PORT = 465
+# EMAIL_HOST_USER = 'denis.israfilov2002@mail.ru'
+# EMAIL_HOST_PASSWORD = '19IaMmEevA95'
+# EMAIL_USE_TLS = True
+# EMAIL_USE_SSL = False
