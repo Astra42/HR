@@ -5,10 +5,12 @@ from user.views import *
 
 
 urlpatterns = [
-    path('login/', LoginView.as_view(), name='token_obtain_pair'),
-    path('login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('logout/', LogoutView.as_view(), name='auth_logout'),
-    path('register/', RegisterView.as_view(), name='auth_register'),
-    path('email_verify/', VerifyEmail.as_view(), name='email_verify'),
-    path('change_password/', ChangePasswordView.as_view(), name='auth_change_password'),
+    path('login/', LoginAPIView.as_view(), name='auth_login'),
+    path('login/refresh/', TokenRefreshView.as_view(), name='auth_refresh'),
+    path('logout/', LogoutAPIView.as_view(), name='auth_logout'),
+    path('register/', RegisterAPIView.as_view(), name='auth_register'),
+    path('email_verify/', VerifyEmailAPIView.as_view(), name='email_verify'),
+    path('change_password/', ChangePasswordAPIView.as_view(), name='auth_change_password'),
+    path('profile/', ProfileAPIList.as_view(), name='profile'),
+
 ]

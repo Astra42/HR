@@ -1,4 +1,5 @@
 import jwt
+from djoser.serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, status, views
 from rest_framework.permissions import IsAuthenticated
@@ -13,7 +14,21 @@ from .utils import Util
 from .models.user import Profile
 
 
-class LoginView(generics.GenericAPIView):
+class ProfileAPIList(generics.ListCreateAPIView,):
+
+    def get(self, request):
+        serializer = UserSerializer(request.user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+        try:
+            serializer = UserSerializer(request.user, context={'request': request})
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class LoginAPIView(generics.GenericAPIView):
     permission_classes = (AllowAny,)
     serializer_class = LoginSerializer
 
@@ -21,15 +36,25 @@ class LoginView(generics.GenericAPIView):
         user = request.data
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
+        user_data = serializer.data
+        username = user_data['username']
+        try:
+            user = User.objects.get(username=username)
+            if not Profile.objects.get(user_id=user.id).is_verified:
+                Util.send_email({'email': user.email}, request)
+
+                return Response({'ok': f'Hello, {user}! We sent you a confirmation email.'},  status=status.HTTP_200_OK)
+        except:
+            pass
+
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class RegisterView(generics.GenericAPIView):
+class RegisterAPIView(generics.GenericAPIView):
     '''
         Register user, end send verify on email.
     '''
 
-    queryset = User.objects.all()
     permission_classes = (AllowAny,)
     serializer_class = RegisterSerializer
 
@@ -45,7 +70,7 @@ class RegisterView(generics.GenericAPIView):
         return Response(user_data, status=status.HTTP_201_CREATED)
 
 
-class VerifyEmail(views.APIView):
+class VerifyEmailAPIView(views.APIView):
     '''
         Gives the user information about the confirmation mail.
         Gives a refresh token to send here POST.
@@ -55,7 +80,7 @@ class VerifyEmail(views.APIView):
 
     def get(self, request):
         token = request.GET.get('token')
-        print(token)
+
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             print(payload)
@@ -63,16 +88,17 @@ class VerifyEmail(views.APIView):
             if not profile.is_verified:
                 profile.is_verified = True
                 profile.save()
-
+            else:
+                return Response({'ok': 'The account is already verified.'})
             return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)
+
         except jwt.ExpiredSignatureError as identifer:
-            return Response({'error': 'Activation Expired. Login and we will send you a confirmation email again.'},
-                            status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Activation Expired.'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifer:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ChangePasswordView(UpdateAPIView):
+class ChangePasswordAPIView(UpdateAPIView):
     '''
         Changing password with:
         [ Old password ]
@@ -104,19 +130,19 @@ class ChangePasswordView(UpdateAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class LogoutView(APIView):
+class LogoutAPIView(generics.GenericAPIView):
     '''
-        Adds refresh token to black list = Logout
+        You need an access token for headers and a refresh token for the form.
     '''
+
+    serializer_class = LogoutSerializer
+
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        try:
-            refresh_token = request.data["refresh_token"]
-            token = RefreshToken(refresh_token)
-            token.blacklist()
 
-            return Response(status=status.HTTP_205_RESET_CONTENT)
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({'ok': 'Bye!'}, status=status.HTTP_204_NO_CONTENT)

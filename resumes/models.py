@@ -1,5 +1,5 @@
 from django.db import models
-from user.models.user import User
+from django.contrib.auth.models import User
 
 
 class Resume(models.Model):

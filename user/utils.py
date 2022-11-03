@@ -23,12 +23,11 @@ class Util:
             'email_body': email_body,
             'to_email': user.email,
             'email_subject': 'Verify your email'}
-
         # Send
         email = EmailMessage(
             subject=data['email_subject'],
             body=data['email_body'],
             to=[data['to_email']],
-            from_email=settings.EMAIL_HOST_USER + '@yandex.ru'
+            from_email=settings.EMAIL_HOST_USER + '@yandex.ru',
         )
         email.send()
