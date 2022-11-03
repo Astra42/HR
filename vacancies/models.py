@@ -10,6 +10,7 @@ class Vacancy(models.Model):
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
     creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
     resumes = models.ManyToManyField(Resume, blank=True)
+    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL")
     
     class Meta:
         ordering = ["-created_date", "updated_date"]
