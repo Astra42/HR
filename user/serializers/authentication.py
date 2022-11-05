@@ -1,80 +1,11 @@
 from rest_framework.exceptions import AuthenticationFailed
-from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from user.models.user import Profile
-
-
-class ProfileAuthSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Profile
-        fields = ['tokens']
-
-    def get_tokens(self, obj):
-        profile = Profile.objects.get(user_id=obj['id'])
-
-        return {
-            'refresh': profile.tokens()['refresh'],
-            'access': profile.tokens()['access']
-        }
-
-
-class LoginSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=255)
-    password = serializers.CharField(max_length=68, write_only=True)
-    profile = ProfileAuthSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = User
-        fields = ['username', 'password', 'profile']
-
-    def validate(self, attrs):
-        user_obj = User.objects.filter(
-            email=attrs.get("username")).first() or User.objects.filter(
-            username=attrs.get("username")).first()
-        credentials = {
-            'username': '',
-            'password': attrs.get('password')
-        }
-
-        if user_obj:
-            credentials['username'] = user_obj.username
-
-        user = self.authenticate(credentials['username'], credentials['password'])
-        if not user:
-            raise AuthenticationFailed('Invalid credentials, try again.')
-        if not user.is_active:
-            raise AuthenticationFailed('Account disabled, contact admin.')
-
-        profile = Profile.objects.get(user_id=user.id)
-
-        return {
-            'email': user.email,
-            'username': user.username,
-            'profile': profile,
-        }
-
-    @staticmethod
-    def authenticate(username=None, password=None, **kwargs):
-        from django.contrib.auth import get_user_model
-        UserModel = get_user_model()
-        if username is None:
-            username = kwargs.get(UserModel.USERNAME_FIELD)
-        try:
-            user = UserModel._default_manager.get_by_natural_key(
-                username)
-            if user.check_password(password):
-                return user
-            else:
-                print('invalid password')
-        except UserModel.DoesNotExist:
-            # Run the default password hasher once to reduce the timing
-            # difference between an existing and a non-existing user (#20760).
-            UserModel().set_password(password)
+from user.models import User
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -115,6 +46,75 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
+class EmailVerificationSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = User
+        fields = ['token']
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(max_length=255)
+    password = serializers.CharField(max_length=68, write_only=True)
+
+    tokens = serializers.SerializerMethodField()
+
+    def get_tokens(self, obj):
+        user = User.objects.get(username=obj['username'])
+
+        return {
+            'refresh': user.tokens()['refresh'],
+            'access': user.tokens()['access']
+        }
+
+    class Meta:
+        model = User
+        fields = ['username', 'password', 'tokens']
+
+    def validate(self, attrs):
+        user_obj = User.objects.filter(
+            email=attrs.get("username")).first() or User.objects.filter(
+            username=attrs.get("username")).first()
+        credentials = {
+            'username': '',
+            'password': attrs.get('password')
+        }
+
+        if user_obj:
+            credentials['username'] = user_obj.username
+
+        user = self.authenticate(credentials['username'], credentials['password'])
+        if not user:
+            raise AuthenticationFailed('Invalid credentials, try again.')
+        if not user.is_active:
+            raise AuthenticationFailed('Account disabled, contact admin.')
+
+        return {
+            'email': user.email,
+            'username': user.username,
+            'tokens': user.tokens,
+        }
+
+    @staticmethod
+    def authenticate(username=None, password=None, **kwargs):
+        from django.contrib.auth import get_user_model
+        UserModel = get_user_model()
+        if username is None:
+            username = kwargs.get(UserModel.USERNAME_FIELD)
+        try:
+            user = UserModel._default_manager.get_by_natural_key(
+                username)
+            if user.check_password(password):
+                return user
+            else:
+                print('invalid password')
+        except UserModel.DoesNotExist:
+            # Run the default password hasher once to reduce the timing
+            # difference between an existing and a non-existing user (#20760).
+            UserModel().set_password(password)
+
+
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
@@ -133,11 +133,3 @@ class LogoutSerializer(serializers.Serializer):
 
         except TokenError:
             self.fail('bad_token')
-
-
-class EmailVerificationSerializer(serializers.ModelSerializer):
-    token = serializers.CharField(max_length=255)
-
-    class Meta:
-        model = User
-        fields = ['token']

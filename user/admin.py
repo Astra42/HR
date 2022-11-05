@@ -1,36 +1,23 @@
 from django.contrib import admin
-from django.contrib.admin import display
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
 from .models.role import Role
 from .models.tags import Tag
-from .models.user import Profile
+from .models.user import User
 from .models.departments import Department
 
 
-admin.site.unregister(User)
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ("username", "created_at",)
+    search_fields = ("username", "email")
+    list_filter = ("created_at", )
 
-
-class UserInline(admin.StackedInline):
-    model = get_user_model()
-
-
-class ProfileInline(admin.StackedInline):
-    model = Profile
-    list_display = ('get_photo_to_list', )
-    filter_horizontal = ('roles', 'tags')
-    fields = (
-        "department",
-        "is_verified",
-        "photo",
-        "get_photo",
-        "roles",
-        "tags",
-    )
     readonly_fields = (
-        'get_photo',
+        'last_login',
+        'created_at',
+        'password',
     )
 
     def get_photo(self, obj):
@@ -38,32 +25,6 @@ class ProfileInline(admin.StackedInline):
             return mark_safe(f'<img src="{obj.photo.url}" height="200">')
 
     get_photo.short_description = 'Avatar'
-
-
-class ProfileDepartmentsInline(admin.StackedInline):
-    extra = 0
-    model = Profile
-    list_display = ('get_photo_to_list', )
-    filter_horizontal = ('roles', 'tags')
-    fields = (
-        "department",
-    )
-    verbose_name = 'Member'
-    show_change_link = True
-
-
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    inlines = (ProfileInline, )
-    list_display = ("username", "date_joined",)
-    search_fields = ("username", "email")
-    list_filter = ("date_joined", )
-    readonly_fields = (
-        'last_login',
-        'date_joined',
-        'password',
-    )
-
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -79,12 +40,10 @@ class RoleAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ("title", "head")
-    search_fields = ("title", "head")
-    inlines = (ProfileDepartmentsInline,)
+    list_display = ("title",)
+    search_fields = ("title",)
 
     fields = [
-        'head',
         'title',
         'description',
         'slug',

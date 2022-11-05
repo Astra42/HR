@@ -1,38 +1,14 @@
-from django.contrib.auth.models import User
-from django.utils.safestring import mark_safe
 from rest_framework import serializers
 
 from user.models.departments import Department
-from user.models.user import Profile
+from user.models.user import User
 
 
-class DepartmentProfileADDSerializer(serializers.ModelSerializer):
+class DepartmentADDSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
         fields = [
             'title',
-        ]
-
-
-class DepartmentADDSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Department
-        fields = [
-            'title'
-        ]
-
-
-class ProfileADDSerializer(serializers.ModelSerializer):
-    department = DepartmentProfileADDSerializer(many=False, read_only=True)
-
-    class Meta:
-        model = Profile
-        fields = [
-            'photo',
-            'roles',
-            'tags',
-            'department',
         ]
 
 
@@ -41,7 +17,6 @@ class ProfileSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=68)
     first_name = serializers.CharField()
     last_name = serializers.CharField()
-    profile = ProfileADDSerializer(many=False, read_only=True)
     head_of_department = DepartmentADDSerializer(source='department', read_only=True)
 
     class Meta:

@@ -1,5 +1,5 @@
 from django.http import Http404
-from rest_framework import generics, status
+from rest_framework import status
 from rest_framework.generics import UpdateAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,8 +13,7 @@ class ProfileAPI(APIView):
     def get_object(self, *args, **kwargs):
         username = self.kwargs.get("username")
         if username is not None:
-            user = get_object_or_404(User, username=username)
-            obj = get_object_or_404(Profile, user=user)
+            obj = get_object_or_404(User, username=username)
             if obj == None:
                 raise Http404
         self.check_object_permissions(self.request, obj)

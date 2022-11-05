@@ -1,4 +1,6 @@
 import jwt
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, status, views
 from rest_framework.permissions import IsAuthenticated
@@ -8,7 +10,6 @@ from config import settings
 from user.serializers.authentication import *
 from user.serializers.profile import *
 from user.utils import Util
-from user.models.user import Profile
 
 
 class LoginAPIView(generics.GenericAPIView):
@@ -23,7 +24,7 @@ class LoginAPIView(generics.GenericAPIView):
         username = user_data['username']
         try:
             user = User.objects.get(username=username)
-            if not Profile.objects.get(user_id=user.id).is_verified:
+            if not user.is_verified:
                 Util.send_email({'email': user.email}, request)
 
                 return Response({'ok': f'Hello, {user}! We sent you a confirmation email.'},  status=status.HTTP_200_OK)
@@ -61,16 +62,20 @@ class VerifyEmailAPIView(views.APIView):
 
     serializer_class = EmailVerificationSerializer
 
+    token_param_config = openapi.Parameter(
+        'token', in_=openapi.IN_QUERY, description='Access token', type=openapi.TYPE_STRING)
+
+    @swagger_auto_schema(manual_parameters=[token_param_config])
     def get(self, request):
         token = request.GET.get('token')
 
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
             print(payload)
-            profile = Profile.objects.get(user_id=payload['user_id'])
-            if not profile.is_verified:
-                profile.is_verified = True
-                profile.save()
+            user = User.objects.get(id=payload['user_id'])
+            if not user.is_verified:
+                user.is_verified = True
+                user.save()
             else:
                 return Response({'ok': 'The account is already verified.'})
             return Response({'email': 'Successfully activated'}, status=status.HTTP_200_OK)

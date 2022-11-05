@@ -6,7 +6,6 @@ class Role(models.Model):
 
     class Meta:
         verbose_name = 'role'
-        verbose_name_plural = 'roles'
 
     def __str__(self):
         return self.title
