@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.admin import display
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
@@ -6,6 +7,7 @@ from django.utils.safestring import mark_safe
 from .models.role import Role
 from .models.tags import Tag
 from .models.user import Profile
+from .models.departments import Department
 
 
 admin.site.unregister(User)
@@ -20,6 +22,7 @@ class ProfileInline(admin.StackedInline):
     list_display = ('get_photo_to_list', )
     filter_horizontal = ('roles', 'tags')
     fields = (
+        "department",
         "is_verified",
         "photo",
         "get_photo",
@@ -37,9 +40,21 @@ class ProfileInline(admin.StackedInline):
     get_photo.short_description = 'Avatar'
 
 
+class ProfileDepartmentsInline(admin.StackedInline):
+    extra = 0
+    model = Profile
+    list_display = ('get_photo_to_list', )
+    filter_horizontal = ('roles', 'tags')
+    fields = (
+        "department",
+    )
+    verbose_name = 'Member'
+    show_change_link = True
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    inlines = (ProfileInline,)
+    inlines = (ProfileInline, )
     list_display = ("username", "date_joined",)
     search_fields = ("username", "email")
     list_filter = ("date_joined", )
@@ -61,6 +76,19 @@ class RoleAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
 
+
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ("title", "head")
+    search_fields = ("title", "head")
+    inlines = (ProfileDepartmentsInline,)
+
+    fields = [
+        'head',
+        'title',
+        'description',
+        'slug',
+    ]
 
 
 

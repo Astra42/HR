@@ -5,6 +5,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from user.models.role import Role
 from user.models.tags import Tag
+from user.models.departments import Department
 
 
 class Profile(models.Model):
@@ -13,13 +14,16 @@ class Profile(models.Model):
     roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     is_verified = models.BooleanField(default=False)
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name="department")
 
-    class Meta():
+    class Meta:
         # ordering = ["-date_joined", "username"]
         verbose_name = 'profile'
         verbose_name_plural = 'profiles'
 
     def __str__(self):
+        if self.user.first_name!='' and self.user.last_name!='':
+            return self.user.username + ' | ' + self.user.first_name.title() + ' ' + self.user.last_name.title()
         return self.user.username
 
     def tokens(self):
@@ -28,3 +32,5 @@ class Profile(models.Model):
             'refresh': str(refresh),
             'access': str(refresh.access_token)
         }
+
+

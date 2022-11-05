@@ -1,31 +1,14 @@
 import jwt
-from djoser.serializers import UserSerializer
 from rest_framework.permissions import AllowAny
 from rest_framework import generics, status, views
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from config import settings
-from .serializers import *
-from .utils import Util
-from .models.user import Profile
-
-
-class ProfileAPIList(generics.ListCreateAPIView,):
-
-    def get(self, request):
-        serializer = UserSerializer(request.user)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        try:
-            serializer = UserSerializer(request.user, context={'request': request})
-            return Response(serializer.data)
-        except User.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+from user.serializers.authentication import *
+from user.serializers.profile import *
+from user.utils import Util
+from user.models.user import Profile
 
 
 class LoginAPIView(generics.GenericAPIView):
@@ -96,38 +79,6 @@ class VerifyEmailAPIView(views.APIView):
             return Response({'error': 'Activation Expired.'}, status=status.HTTP_400_BAD_REQUEST)
         except jwt.exceptions.DecodeError as identifer:
             return Response({'error': 'Invalid token'}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ChangePasswordAPIView(UpdateAPIView):
-    '''
-        Changing password with:
-        [ Old password ]
-        [ New password ]
-        [ Confirm new password ]
-    '''
-    serializer_class = ChangePasswordSerializer
-    model = User
-
-    def get_object(self, queryset=None):
-        return self.request.user
-
-    def update(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        serializer = self.get_serializer(data=request.data)
-
-        if serializer.is_valid():
-            self.object.set_password(serializer.data.get("new_password"))
-            self.object.save()
-            response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
-                'data': []
-            }
-
-            return Response(response)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutAPIView(generics.GenericAPIView):

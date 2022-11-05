@@ -9,14 +9,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from user.models.user import Profile
 
 
-class ProfileSerializer():
-    user = serializers.HiddenField(default=serializers.CurrentUserDefault())
-
-    class Meta:
-        model = User
-        fields = ['user']
-
-
 class ProfileAuthSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
@@ -123,34 +115,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-class EmailVerificationSerializer(serializers.ModelSerializer):
-    token = serializers.CharField(max_length=255)
-
-    class Meta:
-        model = User
-        fields = ['token']
-
-
-class ChangePasswordSerializer(serializers.Serializer):
-    model = User
-
-    old_password = serializers.CharField(required=True)
-    password = serializers.CharField(required=True)
-    password2 = serializers.CharField(required=True)
-
-    def validate(self, attrs):
-        if attrs['password'] != attrs['password2']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-
-        return attrs
-
-    def validate_old_password(self, value):
-        user = self.context['request'].user
-        if not user.check_password(value):
-            raise serializers.ValidationError({"old_password": "Old password is not correct."})
-        return value
-
-
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
@@ -169,3 +133,11 @@ class LogoutSerializer(serializers.Serializer):
 
         except TokenError:
             self.fail('bad_token')
+
+
+class EmailVerificationSerializer(serializers.ModelSerializer):
+    token = serializers.CharField(max_length=255)
+
+    class Meta:
+        model = User
+        fields = ['token']
