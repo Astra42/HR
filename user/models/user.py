@@ -14,7 +14,7 @@ class Profile(models.Model):
     roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     is_verified = models.BooleanField(default=False)
-    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name="department")
+    department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name="department", blank=True)
 
     class Meta:
         # ordering = ["-date_joined", "username"]
