@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
-from django.contrib.auth.models import User
+from user.models.user import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
 

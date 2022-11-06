@@ -1,4 +1,3 @@
-
 from resumes.models import *
 
 
@@ -7,7 +6,6 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = 'tag'
-        verbose_name_plural = 'tags'
 
     def __str__(self):
         return self.title
