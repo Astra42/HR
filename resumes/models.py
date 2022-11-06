@@ -23,7 +23,7 @@ class Resume(models.Model):
             self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if not self.slug:
-            respondent_name = get_object_or_404(User, username=self.creator_id.username).username
+            respondent_name = self.creator_id.username
             a = 0
             while Resume.objects.filter(slug=f"{respondent_name}-{a}").exists():
                 a += 1
