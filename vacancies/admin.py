@@ -4,8 +4,7 @@ from .models import *
 
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
-    list_display = ("title", "creator_id", "created_date", "updated_date", "is_published")
+    list_display = ("title", "creator_id", "created_date", "updated_date", "is_published", "slug")
     search_fields = ("title", "creator_id", "created_date")
     list_editable = ("is_published",)
     list_filter = ("is_published", "created_date")
-

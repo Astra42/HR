@@ -3,10 +3,10 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
+from .models.department import Department
 from .models.role import Role
 from .models.tags import Tag
 from .models.user import Profile
-
 
 admin.site.unregister(User)
 
@@ -17,7 +17,7 @@ class UserInline(admin.StackedInline):
 
 class ProfileInline(admin.StackedInline):
     model = Profile
-    list_display = ('get_photo_to_list', )
+    list_display = ('get_photo_to_list', "slug")
     filter_horizontal = ('roles', 'tags')
     fields = (
         "is_verified",
@@ -40,14 +40,20 @@ class ProfileInline(admin.StackedInline):
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     inlines = (ProfileInline,)
-    list_display = ("username", "date_joined",)
+    list_display = ("username", "date_joined", )
     search_fields = ("username", "email")
-    list_filter = ("date_joined", )
+    list_filter = ("date_joined",)
     readonly_fields = (
         'last_login',
         'date_joined',
         'password',
     )
+
+
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ("title", "head", "slug")
+    search_fields = ("title", "head")
 
 
 @admin.register(Tag)
@@ -60,7 +66,3 @@ class TagAdmin(admin.ModelAdmin):
 class RoleAdmin(admin.ModelAdmin):
     list_display = ("title",)
     search_fields = ("title",)
-
-
-
-

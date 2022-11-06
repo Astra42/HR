@@ -10,7 +10,18 @@ class Vacancy(models.Model):
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
     creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
     resumes = models.ManyToManyField(Resume, blank=True)
-    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL")
+    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
+
+
+    def save(
+        self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if not self.slug:
+            a=0
+            while Vacancy.objects.filter(slug=f"{self.title}-{a}").exists():
+                a+=1
+            self.slug = f"{self.title}-{a}"
+        super(Vacancy, self).save()
     
     class Meta:
         ordering = ["-created_date", "updated_date"]

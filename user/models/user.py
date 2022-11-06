@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -13,6 +15,17 @@ class Profile(models.Model):
     roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
     is_verified = models.BooleanField(default=False)
+    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
+
+    def save(
+            self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if not self.slug:
+            a = random.randint(100, 1000)
+            while Profile.objects.filter(slug=f"{self.user.username}-{a}").exists():
+                a = random.randint(100, 1000)
+            self.slug = f"{self.user.username}-{a}"
+        super(Profile, self).save()
 
     class Meta():
         # ordering = ["-date_joined", "username"]
