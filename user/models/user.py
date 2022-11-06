@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
@@ -50,7 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="photo/%Y/%m/%d/", blank=True)
-    birth_date = models.DateTimeField(blank=True)
+    birth_date = models.DateTimeField(blank=True, null=True)
     country = CountryField(blank=True, blank_label='(Select country)')
 
     about_me = models.TextField(blank=True)
@@ -63,6 +65,18 @@ class User(AbstractBaseUser, PermissionsMixin):
     # REQUIRED_FIELDS = ['email']
 
     objects = UserManager()
+
+    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
+
+    def save(
+            self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if not self.slug:
+            a = random.randint(100, 10000000)
+            while User.objects.filter(slug=f"{self.username}-{a}").exists():
+                a = random.randint(100, 1000)
+            self.slug = f"{self.username}-{a}"
+        super(User, self).save()
 
     def __str__(self):
         if self.first_name != '' or self.last_name != '':

@@ -1,4 +1,6 @@
 from django.db import models
+from django.shortcuts import get_object_or_404
+
 from user.models.user import User
 
 
@@ -15,8 +17,18 @@ class Resume(models.Model):
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
     creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
     doc = models.FileField(verbose_name="doc", upload_to=path_to_doc, blank=True)
-    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL")
+    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
 
+    def save(
+            self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        if not self.slug:
+            respondent_name = get_object_or_404(User, username=self.creator_id.username).username
+            a = 0
+            while Resume.objects.filter(slug=f"{respondent_name}-{a}").exists():
+                a += 1
+            self.slug = f"{respondent_name}-{a}"
+        super(Resume, self).save()
     class Meta:
         ordering = ["-created_date", "updated_date"]
         verbose_name = 'resume'
