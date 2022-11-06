@@ -19,7 +19,7 @@ class PhoneInline(admin.TabularInline):
 class UserAdmin(admin.ModelAdmin):
     inlines = (PhoneInline,)
     filter_horizontal = ("roles", "tags", )
-    list_display = ("username", "first_name", "last_name", "email", "created_at",)
+    list_display = ("username", "first_name", "last_name", "email", "created_at", "slug",)
     search_fields = ("username", "email")
     list_filter = ("created_at", )
 
@@ -75,7 +75,7 @@ class RoleAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ("title",)
+    list_display = ("title", "slug")
     search_fields = ("title",)
 
     fields = [
