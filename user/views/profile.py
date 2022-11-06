@@ -1,4 +1,6 @@
 from django.http import Http404
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import UpdateAPIView, get_object_or_404
 from rest_framework.response import Response
@@ -19,6 +21,10 @@ class ProfileAPI(APIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+    # profile_param_config = openapi.Parameter(
+    #     'authorization', in_=openapi.IN_HEADER, description='Access token', type=openapi.TYPE_STRING)
+    #
+    # @swagger_auto_schema(manual_parameters=[profile_param_config])
     def get(self, request, *args, **kwargs):
         user = request.user
         serializer = ProfileSerializer(user)

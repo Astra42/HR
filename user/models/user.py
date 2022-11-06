@@ -1,6 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+from django_countries.fields import CountryField
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -42,15 +43,21 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_head = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
-    photo = models.ImageField(upload_to="photo/%Y/%m/%d/", verbose_name="Фото", blank=True)
+    photo = models.ImageField(upload_to="photo/%Y/%m/%d/", blank=True)
+    birth_date = models.DateTimeField(blank=True)
+    country = CountryField(blank=True, blank_label='(Select country)')
+
+    about_me = models.TextField(blank=True)
+
     roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
-    departments = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, related_name="department", blank=True)
+    departments = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='department')
 
     USERNAME_FIELD = 'username'  # default django
     # REQUIRED_FIELDS = ['email']
