@@ -31,8 +31,6 @@ class ProfileAPI(APIView):
         return Response(serializer.data)
 
 
-
-
 class ChangePasswordAPIView(UpdateAPIView):
     '''
         Changing password with:

@@ -38,6 +38,7 @@ class UserAdmin(admin.ModelAdmin):
         'is_active',
         'is_staff',
         'is_head',
+        'departments',
         'first_name',
         'last_name',
         'birth_date',
@@ -47,7 +48,6 @@ class UserAdmin(admin.ModelAdmin):
         'get_photo',
         'roles',
         'tags',
-        'departments',
         'last_login',
         'created_at',
         'updated_at',
@@ -80,6 +80,7 @@ class DepartmentAdmin(admin.ModelAdmin):
 
     fields = [
         'title',
+        'head',
         'description',
         'slug',
     ]

@@ -8,4 +8,10 @@ class VacancyAdmin(admin.ModelAdmin):
     search_fields = ("title", "creator_id", "created_date")
     list_editable = ("is_published",)
     list_filter = ("is_published", "created_date")
+    readonly_fields = (
+        'created_date',
+        'updated_date',
+        'creator_id',
+        'reviews',
+    )
 
