@@ -13,7 +13,6 @@ class VacancyAdmin(admin.ModelAdmin):
         'slug',
         'created_date',
         'updated_date',
-        'creator_id',
         'reviews',
     )
     fields = [
