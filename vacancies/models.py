@@ -1,5 +1,5 @@
 from resumes.models import *
-
+from user.models.departments import Department
 
 
 class Vacancy(models.Model):
@@ -27,7 +27,7 @@ class Vacancy(models.Model):
             a=0
             while Vacancy.objects.filter(slug=f"{self.title}-{a}").exists():
                 a+=1
-            self.slug = f"{self.title}-{a}"
+            self.slug = f"{self.title.replace(' ', '-')}-{a}"
         super(Vacancy, self).save()
     
     class Meta:

@@ -21,10 +21,6 @@ class ProfileAPI(APIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    # profile_param_config = openapi.Parameter(
-    #     'authorization', in_=openapi.IN_HEADER, description='Access token', type=openapi.TYPE_STRING)
-    #
-    # @swagger_auto_schema(manual_parameters=[profile_param_config])
     def get(self, request, *args, **kwargs):
         user = request.user
         serializer = ProfileSerializer(user)

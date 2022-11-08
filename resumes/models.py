@@ -29,6 +29,7 @@ class Resume(models.Model):
                 a += 1
             self.slug = f"{respondent_name}-{a}"
         super(Resume, self).save()
+
     class Meta:
         ordering = ["-created_date", "updated_date"]
         verbose_name = 'resume'

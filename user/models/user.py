@@ -54,7 +54,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to="photo/%Y/%m/%d/", blank=True)
     birth_date = models.DateTimeField(blank=True, null=True)
     country = CountryField(blank=True, blank_label='(Select country)')
-
     about_me = models.TextField(blank=True)
 
     roles = models.ManyToManyField(Role, blank=True)

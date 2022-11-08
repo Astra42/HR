@@ -53,8 +53,9 @@ class ProfileSerializer(serializers.Serializer):
     phone_set = PhoneSerializer(many=True, read_only=True)
     departments = DepartmentSerializer(read_only=True)
     head_of_department = DepartmentSerializer(source='department', read_only=True)
-    # roles = RoleSerializer(many=True)
+    about_me = serializers.CharField()
     tags = TagSerializer(many=True)
+    roles = RoleSerializer(many=True)
 
     class Meta:
         model = User
@@ -74,10 +75,8 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
 
-
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
-
     old_password = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
     password2 = serializers.CharField(required=True)
