@@ -2,7 +2,8 @@ from resumes.models import *
 from user.models.departments import Department
 
 
-class Vacancy(models.Model):
+class Vacancy(ResumeMixin, models.Model):
+    qualification = models.TextField(verbose_name="Qualifications")
     title = models.CharField(max_length=50, verbose_name="Title")
     is_published = models.BooleanField(default=True, verbose_name="Is published")
     department = models.ForeignKey(Department, on_delete=models.SET_NULL,
@@ -27,7 +28,7 @@ class Vacancy(models.Model):
             a=0
             while Vacancy.objects.filter(slug=f"{self.title}-{a}").exists():
                 a+=1
-            self.slug = f"{self.title.replace(' ', '-')}-{a}"
+            self.slug = f"{self.title}-{a}"
         super(Vacancy, self).save()
     
     class Meta:
