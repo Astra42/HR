@@ -3,6 +3,7 @@ from rest_framework import serializers
 
 from resumes.models import Resume
 from user.models import User
+from user.serializers.profile import PhoneSerializer
 from .models import Vacancy
 
 
@@ -19,12 +20,15 @@ class VacancySerializer(serializers.ModelSerializer):
 
 class CreatorSerializer(serializers.ModelSerializer):
     country = CountryField(name_only=True)
+    phone_set = PhoneSerializer(many=True)
+
     class Meta:
         model = User
         fields = [
             'first_name',
             'last_name',
             'email',
+            'phone_set',
             'departments',
             'country',
             'roles'
@@ -38,9 +42,6 @@ class ResumeListSerializer(serializers.ModelSerializer):
         model = Resume
         fields = [
             'title',
-            'description',
-            'updated_date',
-            'doc',
             'creator_id'
         ]
 
@@ -52,3 +53,17 @@ class RepliesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy
         fields = ['resumes']
+
+
+class VacancyStatusSerializer(serializers.ModelSerializer):
+    is_published = serializers.BooleanField()
+    lookup_field = 'slug'
+
+    # def update(self, instance, validated_data):
+    #     instance.is_published = validated_data.get('is_published', instance.is_published)
+    #     instance.save()
+    #     return instance
+
+    class Meta:
+        model = Vacancy
+        fields = ['is_published']

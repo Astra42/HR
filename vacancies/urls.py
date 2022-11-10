@@ -9,11 +9,11 @@ urlpatterns = [
     # job posting reactions
     # invite resume on vacancy
     # reject resume
-    path('replies/<slug:slug>', views.RepliesListAPIView.as_view(), name='replies'),
+    path('<slug:vacancy_slug>/replies', views.RepliesListAPIView.as_view(), name='replies'),
 
     # accept invite resume on vacancy by resume author
-    path('accept-invite/<slug:vacancy_slug>/<slug:resume_slug>', views.AcceptInviteAPIView.as_view(), name='accept-invite'),
+    path('<slug:vacancy_slug>/respond', views.RespondAPIView.as_view(), name='respond'),
 
-    # apply resume on vacancy
-    path('<slug:vacancy_slug>/apply/<slug:resume_slug>', views.ApplyAPIView.as_view(), name='apply'),
+    # change status vacancy
+    path('<slug:vacancy_slug>/status/', views.VacancyStatusAPIView.as_view(), name='status'),
 ]

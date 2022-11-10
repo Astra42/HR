@@ -1,3 +1,4 @@
+from django.contrib.auth import authenticate
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
@@ -62,10 +63,11 @@ class LoginSerializer(serializers.ModelSerializer):
 
     def get_tokens(self, obj):
         user = User.objects.get(username=obj['username'])
+        tokens = user.tokens()
 
         return {
-            'refresh': user.tokens()['refresh'],
-            'access': user.tokens()['access']
+            'refresh': tokens['refresh'],
+            'access': tokens['access']
         }
 
     class Meta:
@@ -84,7 +86,7 @@ class LoginSerializer(serializers.ModelSerializer):
         if user_obj:
             credentials['username'] = user_obj.username
 
-        user = self.authenticate(credentials['username'], credentials['password'])
+        user = authenticate(username=credentials['username'],password=credentials['password'])
         if not user:
             raise AuthenticationFailed('Invalid credentials, try again.')
         if not user.is_active:
@@ -95,24 +97,6 @@ class LoginSerializer(serializers.ModelSerializer):
             'username': user.username,
             'tokens': user.tokens,
         }
-
-    @staticmethod
-    def authenticate(username=None, password=None, **kwargs):
-        from django.contrib.auth import get_user_model
-        UserModel = get_user_model()
-        if username is None:
-            username = kwargs.get(UserModel.USERNAME_FIELD)
-        try:
-            user = UserModel._default_manager.get_by_natural_key(
-                username)
-            if user.check_password(password):
-                return user
-            else:
-                print('invalid password')
-        except UserModel.DoesNotExist:
-            # Run the default password hasher once to reduce the timing
-            # difference between an existing and a non-existing user (#20760).
-            UserModel().set_password(password)
 
 
 class LogoutSerializer(serializers.Serializer):

@@ -2,7 +2,14 @@ from resumes.models import *
 from user.models.departments import Department
 
 
-class Vacancy(ResumeMixin, models.Model):
+class Vacancy(models.Model):
+    title = models.CharField(max_length=50, verbose_name="Title")
+    is_published = models.BooleanField(default=True, verbose_name="Is published")
+    description = models.TextField(verbose_name="Description", )
+    created_date = models.DateTimeField(auto_now_add=True, verbose_name="Created")
+    updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
+    creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
+    slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL,
                                    null=True, blank=True,
                                    verbose_name='department')
