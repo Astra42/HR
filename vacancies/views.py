@@ -121,7 +121,7 @@ class RespondAPIView(APIView):
         operation_description='Allows the job seeker to '
                               'respond to the vacancy.'
     )
-    def get(self, request, *args, **kwargs):
+    def patch(self, request, *args, **kwargs):
         try:
             user = request.user
             resume = get_object_or_404(Resume.objects.all(), creator_id=user.id)
