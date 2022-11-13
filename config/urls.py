@@ -8,12 +8,12 @@ from drf_yasg import openapi
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="HR API",
+      title="Interesnee HR API",
       default_version='v1',
-      description="Test description",
+      description="Swagger api for all endpoints for HR.",
       terms_of_service="https://www.google.com/policies/terms/",
       contact=openapi.Contact(email="denis.israfilov2002@mail.ru"),
-      license=openapi.License(name="Test License"),
+      # license=openapi.License(name="Test License"),
    ),
    public=True,
    permission_classes=[permissions.AllowAny],
@@ -21,7 +21,11 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('user.urls')),
+    path('user/', include('user.urls')),
+    path('vacancies/', include('vacancies.urls')),
+    path('resumes/', include('resumes.urls')),
+
+    # SWAGGER
     path('', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 ]

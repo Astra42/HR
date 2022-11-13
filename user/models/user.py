@@ -56,7 +56,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to="photo/%Y/%m/%d/", blank=True)
     birth_date = models.DateTimeField(blank=True, null=True)
     country = CountryField(blank=True, blank_label='(Select country)')
-
     about_me = models.TextField(blank=True)
 
     roles = models.ManyToManyField(Role, blank=True)
@@ -84,6 +83,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)
+
         return {
             'refresh': str(refresh),
             'access': str(refresh.access_token)
