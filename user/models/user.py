@@ -7,6 +7,7 @@ from django_countries.fields import CountryField
 
 from rest_framework_simplejwt.tokens import RefreshToken
 
+from generators.sequens import *
 from user.models.role import Role
 from user.models.tags import Tag
 from user.models.departments import Department
@@ -39,6 +40,7 @@ class UserManager(BaseUserManager):
         return user
 
 
+generator = Generator(8, "-0123456789abcdefghijklmnopqrstuvwxyz")
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, db_index=True)
     email = models.EmailField(max_length=255, unique=True, db_index=True)
@@ -72,10 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if not self.slug:
-            a = random.randint(100, 10000000)
-            while User.objects.filter(slug=f"{self.username}-{a}").exists():
-                a = random.randint(100, 1000)
-            self.slug = f"{self.username}-{a}"
+            self.slug = f"id-{generator.sequence_generator()}"
         super(User, self).save()
 
     def __str__(self):
