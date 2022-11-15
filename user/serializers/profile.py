@@ -83,23 +83,28 @@ class ProfileSerializer(serializers.Serializer):
         return instance
 
 
-# class ChangePasswordSerializer(serializers.Serializer):
-#     model = User
-#     old_password = serializers.CharField(required=True)
-#     password = serializers.CharField(required=True)
-#     password2 = serializers.CharField(required=True)
-#
-#     def validate(self, attrs):
-#         if attrs['password'] != attrs['password2']:
-#             raise serializers.ValidationError({"password": "Password fields didn't match."})
-#
-#         return attrs
-#
-#     def validate_old_password(self, value):
-#         user = self.context['request'].user
-#         if not user.check_password(value):
-#             raise serializers.ValidationError({"old_password": "Old password is not correct."})
-#         return value
+class ChangePasswordSerializer(serializers.Serializer):
+    model = User
+    old_password = serializers.CharField(min_length=6, max_length=68, write_only=True)
+    password = serializers.CharField(min_length=6, max_length=68, write_only=True)
+    password2 = serializers.CharField(min_length=6, max_length=68, write_only=True)
+
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError({"password": "Password fields didn't match."})
+
+        password = attrs.get('password')
+        user = self.context['request'].user
+        user.set_password(password)
+        user.save()
+
+        return attrs
+
+    def validate_old_password(self, value):
+        user = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError({"old_password": "Old password is not correct."})
+        return value
 
 
 class ResetPasswordEmailRequestSerializer(serializers.Serializer):
