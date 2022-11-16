@@ -13,6 +13,8 @@ urlpatterns = [
     path('email_verify/', VerifyEmailAPIView.as_view(), name='email_verify'),
     path('change_password/', ChangePasswordAPIView.as_view(),
          name='auth_change_password'),
+    # path('change_email/', ChangeEmailAPIView.as_view(),
+    #      name='auth_change_email'),
     path('profile/', ProfileAPI.as_view(), name='profile'),
     path('request-reset-email/', RequestPasswordResetEmail.as_view(),
          name="request-reset-email"),
