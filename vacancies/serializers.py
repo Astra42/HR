@@ -14,6 +14,7 @@ class VacancySerializer(serializers.ModelSerializer):
             'title',
             'salary_from', 'salary_to',
             'qualification', 'description',
+            'slug',
         ]
         lookup_field = 'slug'
 
