@@ -15,5 +15,6 @@ class ResumeSerializer(serializers.ModelSerializer):
             'doc',
             'is_published',
             'updated_date',
+            'slug'
         ]
         lookup_field = 'slug'
