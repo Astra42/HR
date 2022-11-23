@@ -49,6 +49,7 @@ class PhoneSerializer(serializers.ModelSerializer):
 class ProfileSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=255)
     email = serializers.EmailField(max_length=68)
+    is_head = serializers.BooleanField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
     birth_date = serializers.DateTimeField()
