@@ -10,8 +10,8 @@ from django.utils.http import urlsafe_base64_encode
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.generics import UpdateAPIView, get_object_or_404, \
-    GenericAPIView
+from rest_framework.generics import UpdateAPIView, GenericAPIView, RetrieveAPIView
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -24,7 +24,7 @@ class CustomRedirect(HttpResponsePermanentRedirect):
     allowed_schemes = ['http', 'https']
 
 
-class ProfileAPI(APIView):
+class MyProfileAPI(APIView):
     serializer_class = ProfileSerializer
 
     def get_object(self, queryset=None):
@@ -35,6 +35,12 @@ class ProfileAPI(APIView):
         serializer = ProfileSerializer(user)
 
         return Response(serializer.data)
+
+
+class ProfileAPI(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = ProfileSerializer
+    lookup_field = 'username'
 
 
 class ChangePasswordAPIView(GenericAPIView):
@@ -162,4 +168,3 @@ class SetNewPasswordAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response({'success': True, 'message': 'Password reset success'},
                         status=status.HTTP_200_OK)
-

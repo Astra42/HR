@@ -1,14 +1,14 @@
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView
 
-from config.permissions import IsResumeCreator
+from config.permissions import ResumePermission
 from .serializers import *
 
 
 class ResumeListAPIView(ListCreateAPIView):
     serializer_class = ResumeSerializer
-    queryset = Resume.objects.all()
-    permission_classes = (IsResumeCreator,)
+    queryset = Resume.objects.filter(is_published=True)
+    permission_classes = (ResumePermission,)
 
     def perform_create(self, serializer):
         return serializer.save(creator_id=self.request.user)
@@ -19,8 +19,8 @@ class ResumeListAPIView(ListCreateAPIView):
 
 class ResumeDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ResumeSerializer
-    queryset = Resume.objects.all()
-    permission_classes = (IsResumeCreator,)
+    queryset = Resume.objects.filter(is_published=True)
+    permission_classes = (ResumePermission,)
     lookup_field = 'slug'
 
     def perform_create(self, serializer):

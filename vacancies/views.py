@@ -6,7 +6,6 @@ from rest_framework.generics import ListCreateAPIView, \
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
-
 from config.permissions import *
 from .serializers import *
 from .utils import *
@@ -14,7 +13,7 @@ from .utils import *
 
 class VacancyListAPIView(ListCreateAPIView):
     serializer_class = VacancySerializer
-    queryset = Vacancy.objects.all()
+    queryset = Vacancy.objects.filter(is_published=True)
     permission_classes = (IsHeadOrEmployee,)
 
     def perform_create(self, serializer):
@@ -29,7 +28,7 @@ class VacancyListAPIView(ListCreateAPIView):
 
 class VacancyDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = VacancySerializer
-    queryset = Vacancy.objects.all()
+    queryset = Vacancy.objects.filter(is_published=True)
     permission_classes = (IsHeadOrEmployee,)
     lookup_field = 'slug'
 
@@ -115,7 +114,7 @@ class RepliesListAPIView(APIView):
 
 
 class RespondAPIView(APIView):
-    permission_classes = (IsResumeCreator,)
+    permission_classes = (ResumePermission,)
 
     @swagger_auto_schema(
         operation_description='Allows the job seeker to '

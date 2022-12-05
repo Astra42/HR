@@ -15,11 +15,12 @@ urlpatterns = [
          name='auth_change_password'),
     # path('change_email/', ChangeEmailAPIView.as_view(),
     #      name='auth_change_email'),
-    path('profile/', ProfileAPI.as_view(), name='profile'),
+    path('my_profile/', MyProfileAPI.as_view(), name='my_profile'),
+    path('profile/<str:username>', ProfileAPI.as_view(), name='profile'),
     path('request-reset-email/', RequestPasswordResetEmail.as_view(),
          name="request-reset-email"),
     path('password-reset/<uidb64>/<token>/',
          PasswordTokenCheckAPI.as_view(), name='password-reset-confirm'),
     path('password-reset-complete', SetNewPasswordAPIView.as_view(),
-         name='password-reset-complete')
+         name='password-reset-complete'),
 ]

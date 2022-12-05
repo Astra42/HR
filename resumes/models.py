@@ -7,13 +7,14 @@ from user.models.user import User
 def path_to_doc(instance, file_name):
     return "resumes/{0}/{1}".format(instance.creator_id, file_name)
 
+
 class Resume(models.Model):
     title = models.CharField(max_length=50, verbose_name="Title")
     is_published = models.BooleanField(default=True, verbose_name="Is published")
     description = models.TextField(verbose_name="Description", )
     created_date = models.DateTimeField(auto_now_add=True, verbose_name="Created")
     updated_date = models.DateTimeField(auto_now=True, verbose_name="Updated")
-    creator_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Creator")
+    creator_id = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="Creator")
     slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
     experience = models.TextField(blank=True, verbose_name="Experience",)
     doc = models.FileField(verbose_name="doc", upload_to=path_to_doc, blank=True)

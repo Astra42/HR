@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404
 from resumes.models import Resume
 from user.models import User
 from vacancies.models import Vacancy
+from resumes.models import Resume
 
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
 
@@ -46,14 +47,18 @@ class RepliesPermission(permissions.BasePermission):
         return False
 
 
-
-class IsResumeCreator(permissions.BasePermission):
-
+class ResumePermission(permissions.BasePermission):
     def has_permission(self, request, view, *args, **kwargs):
-        user = User.objects.get(id=request.user.id)
-        resume = get_object_or_404(Resume.objects.all(), creator_id=user.id)
+        user = request.user
+        try:
+            resume = Resume.objects.get(creator_id=user.id)
+        except Resume.DoesNotExist:
+            resume = None
 
-        if user.id == resume.creator_id.id:
+        if request.method == 'POST' and resume is None:
+            return True
+
+        if user.is_head and request.method in SAFE_METHODS:
             return True
 
         return False
