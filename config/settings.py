@@ -35,7 +35,6 @@ INSTALLED_APPS = [
     'drf_yasg',
     'phonenumber_field',
     'django_countries',
-    'frontend.apps.FrontendConfig',
     'mailings.apps.MailingsConfig',
     'resumes.apps.ResumesConfig',
     'vacancies.apps.VacanciesConfig',
