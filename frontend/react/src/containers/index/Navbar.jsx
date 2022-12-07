@@ -2,8 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import resumes from '../svg/resumes.svg';
-import vacancies from '../svg/vacancies.svg';
+import resumes from '../../svg/resumes.svg';
+import vacancies from '../../svg/vacancies.svg';
 
 function Navbar(props) {
     return (

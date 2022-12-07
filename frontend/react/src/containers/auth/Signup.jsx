@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 
-import { signup } from '../actions/auth';
+import { signup } from '../../actions/auth';
 
-import '../css/auth.css';
+import '../../css/auth.css';
 
 function Signup(props) {
     if (props.isAuthenticated) {

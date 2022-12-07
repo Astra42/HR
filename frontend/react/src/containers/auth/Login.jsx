@@ -3,9 +3,9 @@ import { connect } from 'react-redux';
 import { Link, Navigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 
-import { login } from '../actions/auth';
+import { login } from '../../actions/auth';
 
-import '../css/auth.css';
+import '../../css/auth.css';
 
 function Login(props) {
     if (props.isAuthenticated) {

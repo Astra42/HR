@@ -7,17 +7,15 @@ import Layout from './hocs/Layout';
 
 import './css/index.css';
 
-import Home from './containers/Home';
-import Vacancy from './containers/Vacancy'
-import Signup from './containers/Signup';
-import Login from './containers/Login';
-import ResetPassword from './containers/ResetPassword';
-import ResetPasswordConfirm from './containers/ResetPasswordConfirm';
-import Activate from './containers/Activate';
-import Vacancies from './containers/Vacancies';
-import Profile from './containers/Profile';
-import AddVacancy from './containers/AddVacancy';
-import AddResume from './containers/AddResume';
+import Home from './containers/index/Home'
+import Vacancies from './containers/vacancies/Vacancies'
+import Vacancy from './containers/vacancies/Vacancy'
+import AddVacancy from './containers/vacancies/AddVacancy'
+import Signup from './containers/auth/Signup'
+import Profile from './containers/auth/Profile'
+import Login from './containers/auth/Login'
+import AddResume from './containers/resumes/AddResume'
+
 
 function App(props) {
     return (

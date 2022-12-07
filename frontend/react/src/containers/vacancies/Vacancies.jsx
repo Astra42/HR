@@ -2,11 +2,11 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navigate, Link } from 'react-router-dom';
 
-import { loadAvailableVacancies } from '../actions/vacancies';
+import { loadAvailableVacancies } from '../../actions/vacancies';
 
-import '../css/vacancies.css';
+import '../../css/vacancies.css';
 
-import ShortVacancy from '../components/vacancies/ShortVacancy';
+import ShortVacancy from '../../components/vacancies/ShortVacancy';
 
 function Vacancies(props) {
     useEffect(() => {

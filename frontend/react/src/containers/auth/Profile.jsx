@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navigate, Link, NavLink } from 'react-router-dom';
 
-import { loadUser, logout } from '../actions/auth';
+import { loadUser, logout } from '../../actions/auth';
 
 function Profile(props) {
     useEffect(() => {

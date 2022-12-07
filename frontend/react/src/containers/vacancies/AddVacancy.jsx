@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Navigate, useNavigate, Link } from 'react-router-dom';
 
-import FormInput from '../components/FormInput';
+import FormInput from '../../components/FormInput';
 
-import { createNewVacancy } from '../actions/vacancies';
+import { createNewVacancy } from '../../actions/vacancies';
 
 function AddVacancy(props) {
     const [formData, setFormData] = useState({

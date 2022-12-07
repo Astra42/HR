@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Navigate, Link } from 'react-router-dom';
 
-import FormInput from '../components/FormInput';
+import FormInput from '../../components/FormInput';
 
-import { createNewResume } from '../actions/resumes';
+import { createNewResume } from '../../actions/resumes';
 
 function AddResume(props) {
     const [formData, setFormData] = useState({

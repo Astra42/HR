@@ -2,10 +2,8 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import logo from '../svg/logo.svg';
-import profile from '../svg/profile.svg';
-import resumes from '../svg/resumes.svg';
-import vacancies from '../svg/vacancies.svg';
+import logo from '../../svg/logo.svg';
+import profile from '../../svg/profile.svg';
 
 import Navbar from './Navbar';
 

@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 
 import { checkAuthenticated } from '../actions/auth';
 
-import Header from '../containers/Header';
-import Navbar from '../containers/Navbar';
+import Header from '../containers/index/Header';
+import Navbar from '../containers/index/Navbar';
 
 function Layout(props) {
     useEffect(() => {
