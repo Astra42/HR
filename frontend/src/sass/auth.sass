@@ -1,0 +1,111 @@
+@import '_all.sass'
+@import '_mixins.sass'
+$block-clr: #4d5871
+$bg-clr: #2E3544
+$input-clr: #61708f // 97, 112, 143
+$btn: #758bfd
+$error: #f75050 // 247, 80, 80
+$text-clr: #e8e9f3
+$link: #FF9505
+
+$black: #1a1d26
+$white: #faf9f8 // 250, 249, 248
+$green: #50f750 // 80, 247, 80
+$green-btn: #38AC38
+$green-btn-h: #2c892c
+$blue: #0d6efd
+
+#validation
+    height: 0
+    overflow: hidden
+    transition: all .5s
+
+body
+    overflow: hidden
+    background: $bg-clr
+    background-color: #2E3544
+    opacity: 1
+    background-image:  radial-gradient(#576480 1.55px, transparent 1.55px), radial-gradient(#576480 1.55px, #2E3544 1.55px)
+    background-size: 62px 62px
+    background-position: 0 0,31px 31px
+
+div
+    color: $white
+
+input[type]
+    color: $white
+    @include placeholder-color($text-clr, $text-clr)
+    background-color: $input-clr
+
+    &:focus
+        color: $white
+        background-color: $input-clr
+        border-color: $white
+        box-shadow: 0 0 0 0.10rem $text-clr
+
+.fw-600
+    font-weight: 600
+
+//enter button ls
+.sign-in
+    letter-spacing: 1px
+
+.full-h
+    height: 100vh
+
+.card
+    background: $block-clr
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 2px
+    //box-shadow: #576480  0px 0px 0px 2px, rgba(250, 249, 248, .5) 0px 4px 6px -1px, #576480 0px 1px 0px inset
+    //box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3)
+
+// text messages
+.message
+    font-size: .9em
+    line-height: 1.2em
+
+//links
+.link
+    color: $white
+    text-decoration: underline
+
+    &:hover
+        color: $link
+        text-decoration: none
+        
+//view password
+#togglePassword
+    img
+        opacity: .6
+        font-size: 20px
+
+.pass-form
+    padding-right: 35px
+
+//validation icons
+.valid-icon
+    font-size: 18px
+
+.fc-danger
+    box-shadow: 0 0 0 0.10rem $error
+
+    &:focus
+        box-shadow: 0 0 0 0.25rem $text-clr
+        border-color: $text-clr
+
+.valid-block
+    .alert-text, .valid-icon
+        color: $green
+        filter: drop-shadow(0 0 1px rgba(80, 247, 80, .5))
+
+.invalid-block
+    .alert-text, .valid-icon
+        color: $error
+        filter: drop-shadow(0 0 1px rgba(247, 80, 80, 1))
+
+.btn-success
+    color: $white
+    background: $green-btn
+
+    &:hover
+        background: $green-btn-h

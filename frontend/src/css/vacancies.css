@@ -1,0 +1,57 @@
+.vacancies {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    overflow-y: auto;
+    height: 100%;
+    min-width: 25rem;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.vacancies::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.vacancies {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.vacancy {
+    background-color: #394053;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    color: white;
+    padding: 1rem;
+    width: 40%;
+}
+
+.vacancy h1 {
+    font-size: 1.5rem;
+}
+
+.short-vacancy {
+    background-color: #394053;
+    margin-bottom: 2rem;
+    border-radius: 1rem;
+    text-decoration: none;
+    color: white;
+    padding: 0.8rem;
+}
+
+.short-vacancy h1 {
+    font-size: 1.5rem;
+}
+
+.short-vacancy:hover,
+.short-vacancy:focus,
+.short-vacancy:active {
+    color: white;
+}
+
+.short-vacancy:hover {
+    border: 0.15rem solid white;
+    padding: 0.65rem;
+}
