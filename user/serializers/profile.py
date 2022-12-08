@@ -52,7 +52,7 @@ class ProfileSerializer(serializers.Serializer):
     is_head = serializers.BooleanField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
-    birth_date = serializers.DateTimeField()
+    birth_date = serializers.DateField()
     country = CountryField(name_only=True)
     photo = serializers.ImageField()
     phone_set = PhoneSerializer(many=True, read_only=True)
@@ -67,21 +67,50 @@ class ProfileSerializer(serializers.Serializer):
         model = User
         fields = ('phones',)
 
+
+class UpdateUserSerializer(serializers.Serializer):
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    birth_date = serializers.DateField()
+    country = CountryField(name_only=True)
+    photo = serializers.ImageField()
+    phone_set = PhoneSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = User
+        extra_kwargs = {
+            'first_name': {'required': False},
+            'last_name': {'required': False},
+            'email': {'required': False}
+        }
+
+    def validate_email(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(email=value).exists():
+            raise serializers.ValidationError({"email": "This email is already in use."})
+        return value
+
+    def validate_username(self, value):
+        user = self.context['request'].user
+        if User.objects.exclude(pk=user.pk).filter(username=value).exists():
+            raise serializers.ValidationError({"username": "This username is already in use."})
+        return value
+
     def update(self, instance, validated_data):
-        if validated_data.get('username'):
-            instance.username = validated_data.get('username',
-                                                   instance.username)
-
-        if validated_data.get('first_name'):
-            instance.username = validated_data.get('first_name',
-                                                   instance.first_name)
-
-        if validated_data.get('last_name'):
-            instance.username = validated_data.get('last_name',
-                                                   instance.last_name)
+        print(validated_data)
+        if 'first_name' in validated_data:
+            instance.first_name = validated_data['first_name']
+        if 'last_name' in validated_data:
+            instance.last_name = validated_data['last_name']
+        if 'email' in validated_data:
+            instance.email = validated_data['email']
+        if 'username' in validated_data:
+            instance.username = validated_data['username']
 
         instance.save()
+
         return instance
+
 
 
 class ChangePasswordSerializer(serializers.Serializer):

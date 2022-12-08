@@ -8,10 +8,8 @@ from resumes.models import Resume
 SAFE_METHODS = ['GET', 'HEAD', 'OPTIONS']
 
 
-class IsHeadOrEmployee(permissions.BasePermission):
-
+class IsNotEmployee(permissions.BasePermission):
     def has_permission(self, request, view):
-
         if request.method in SAFE_METHODS:
             return True
 
@@ -31,7 +29,6 @@ class IsHeadOrEmployee(permissions.BasePermission):
 
         if user.is_head and user.departments == obj.department:
             return True
-
         return False
 
 
@@ -75,3 +72,4 @@ class ResumePermission(permissions.BasePermission):
             return True
 
         return False
+

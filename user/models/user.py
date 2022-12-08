@@ -41,6 +41,8 @@ class UserManager(BaseUserManager):
 
 
 generator = Generator(8, "-0123456789abcdefghijklmnopqrstuvwxyz")
+
+
 class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True, db_index=True)
     email = models.EmailField(max_length=255, unique=True, db_index=True)
@@ -54,7 +56,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     photo = models.ImageField(upload_to="photo/%Y/%m/%d/", blank=True)
-    birth_date = models.DateTimeField(blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
     country = CountryField(blank=True, blank_label='(Select country)')
     about_me = models.TextField(blank=True)
 

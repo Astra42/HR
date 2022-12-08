@@ -17,6 +17,7 @@ from rest_framework.views import APIView
 
 from config import settings
 from user.serializers.profile import *
+from vacancies.utils import swagger_param
 
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -35,6 +36,29 @@ class MyProfileAPI(APIView):
         serializer = ProfileSerializer(user)
 
         return Response(serializer.data)
+
+
+class UpdateProfileView(UpdateAPIView):
+    serializer_class = UpdateUserSerializer
+
+    def get_object(self):
+        return self.request.user
+
+    def patch(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.serializer_class(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            response = {
+                'status': 'success',
+                'code': status.HTTP_200_OK,
+                'message': 'Password updated successfully',
+                'data': []
+            }
+
+            return Response(serializer.data)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileAPI(RetrieveAPIView):
@@ -93,7 +117,7 @@ class ChangePasswordAPIView(GenericAPIView):
 #             response = {
 #                 'status': 'success',
 #                 'code': status.HTTP_200_OK,
-#                 'message': 'Password updated successfully',
+#                 'message': 'email updated successfully',
 #                 'data': []
 #             }
 #
@@ -105,6 +129,7 @@ class ChangePasswordAPIView(GenericAPIView):
 class RequestPasswordResetEmail(GenericAPIView):
     serializer_class = ResetPasswordEmailRequestSerializer
 
+    @swagger_auto_schema(operation_description='Send email for reset email.')
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
 
@@ -134,14 +159,19 @@ class RequestPasswordResetEmail(GenericAPIView):
             )
             email.send()
 
+            return Response(
+                {'success': 'We have sent you a link to reset your password'},
+                status=status.HTTP_200_OK)
+
         return Response(
-            {'success': 'We have sent you a link to reset your password'},
+            {'success': "This email isn't registered"},
             status=status.HTTP_200_OK)
 
 
 class PasswordTokenCheckAPI(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
+    @swagger_auto_schema(operation_description='Token and uid verification')
     def get(self, request, uidb64, token):
         try:
             id = smart_str(urlsafe_base64_decode(uidb64))
@@ -163,6 +193,7 @@ class PasswordTokenCheckAPI(GenericAPIView):
 class SetNewPasswordAPIView(GenericAPIView):
     serializer_class = SetNewPasswordSerializer
 
+    @swagger_auto_schema(operation_description='Change password from email')
     def patch(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)

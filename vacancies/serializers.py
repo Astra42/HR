@@ -11,28 +11,22 @@ class VacancySerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy
         fields = [
-            'title',
-            'salary_from', 'salary_to',
-            'qualification', 'description',
-            'slug',
+            'title', 'salary_from', 'salary_to', 'qualification',
+            'description', 'slug',
         ]
         lookup_field = 'slug'
 
 
 class CreatorSerializer(serializers.ModelSerializer):
+    """Returns brief information about the resume creator."""
     country = CountryField(name_only=True)
     phone_set = PhoneSerializer(many=True)
 
     class Meta:
         model = User
         fields = [
-            'first_name',
-            'last_name',
-            'email',
-            'phone_set',
-            'departments',
-            'country',
-            'roles'
+            'first_name', 'last_name', 'email', 'phone_set', 'departments',
+            'country', 'roles'
         ]
 
 
@@ -59,11 +53,6 @@ class RepliesSerializer(serializers.ModelSerializer):
 class VacancyStatusSerializer(serializers.ModelSerializer):
     is_published = serializers.BooleanField()
     lookup_field = 'slug'
-
-    # def update(self, instance, validated_data):
-    #     instance.is_published = validated_data.get('is_published', instance.is_published)
-    #     instance.save()
-    #     return instance
 
     class Meta:
         model = Vacancy
