@@ -114,8 +114,6 @@ class RepliesListAPIView(APIView):
 
 
 class RespondAPIView(APIView):
-    permission_classes = (ResumePermission,)
-
     @swagger_auto_schema(
         operation_description='Allows the job seeker to '
                               'respond to the vacancy.'

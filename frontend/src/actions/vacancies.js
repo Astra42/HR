@@ -2,13 +2,6 @@ import axios from 'axios';
 
 import { types } from './types';
 
-export const setCurrentVacancy = data => async dispatch => {
-    dispatch({
-        type: types.vacancies.SET_CURRENT_VACANCY,
-        payload: data,
-    });
-};
-
 export const loadAvailableVacancies = () => async dispatch => {
     const config = {
         headers: {
@@ -24,7 +17,6 @@ export const loadAvailableVacancies = () => async dispatch => {
             type: types.vacancies.LOAD_AVAILABLE_VACANCIES_SUCCES,
             payload: res.data,
         });
-
     } catch (error) {
         dispatch({
             type: types.vacancies.LOAD_AVAILABLE_VACANCIES_FAIL,
@@ -49,7 +41,6 @@ export const createNewVacancy = data => async dispatch => {
         dispatch({
             type: types.vacancies.CREATE_NEW_VACANCY_SUCCES,
         });
-
     } catch (error) {
         dispatch({
             type: types.vacancies.CREATE_NEW_VACANCY_FAIL,
@@ -57,7 +48,7 @@ export const createNewVacancy = data => async dispatch => {
     }
 };
 
-export async function loadVacancyBySlug(data)  {
+export async function replyOnVacancy(data) {
     const config = {
         headers: {
             'Content-Type': 'application/json',
@@ -67,11 +58,9 @@ export async function loadVacancyBySlug(data)  {
     };
 
     try {
-        let res = await axios.get(`${process.env.REACT_APP_API_URL}/vacancies/${data.slug}`, config);
-
-        return res.data;
-
+        let res = await axios
+            .patch(`${process.env.REACT_APP_API_URL}/vacancies/${data.slug}/respond`, config)
     } catch (error) {
         return null;
     }
-};
+}

@@ -2,7 +2,6 @@ import { types } from '../actions/types';
 
 const initialState = {
     list: [],
-    current: null,
 };
 
 export function vacanciesReducer(state = initialState, action) {

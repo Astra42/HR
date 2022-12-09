@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { loadVacancyBySlug } from '../../actions/vacancies';
+import { replyOnVacancy } from '../../actions/vacancies';
 
 import axios from 'axios';
 
@@ -38,7 +38,7 @@ function Vacancy(props) {
     }
 
     function handleClick() {
-
+        props.replyOnVacancy({slug: slug})
     }
 
     return (
@@ -78,4 +78,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { loadVacancyBySlug })(Vacancy);
+export default connect(mapStateToProps, { replyOnVacancy })(Vacancy);

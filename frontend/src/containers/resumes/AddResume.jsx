@@ -45,7 +45,7 @@ function AddResume(props) {
 
     return (
         <div className='container mt-5'>
-            <h1>Добавить вакансию</h1>
+            <h1>Добавить резюме</h1>
             <form onSubmit={e => handleSubmit(e)}>
                 {inputs.map((input, index) => (
                     <FormInput key={index} {...input} handleChange={handleChange} />
