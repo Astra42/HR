@@ -1,5 +1,4 @@
 from django.http import Http404
-from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.generics import ListCreateAPIView, \
     RetrieveUpdateDestroyAPIView
@@ -13,23 +12,22 @@ from .utils import *
 
 class VacancyListAPIView(ListCreateAPIView):
     serializer_class = VacancySerializer
-    queryset = Vacancy.objects.filter(is_published=True)
-    permission_classes = (IsHeadOrEmployee,)
+    permission_classes = (IsNotEmployee,)
 
     def perform_create(self, serializer):
         return serializer.save(
-            creator_id=self.request.user,
-            department=self.request.user.departments
+            creator_id=self.request.user,  # Creator
+            department=self.request.user.departments  # Creator Department
         )
 
     def get_queryset(self):
-        return self.queryset.all()
+        return Vacancy.objects.filter(is_published=True)
 
 
 class VacancyDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = VacancySerializer
     queryset = Vacancy.objects.filter(is_published=True)
-    permission_classes = (IsHeadOrEmployee,)
+    permission_classes = (IsNotEmployee,)
     lookup_field = 'slug'
 
     def perform_create(self, serializer):
@@ -38,20 +36,20 @@ class VacancyDetailAPIView(RetrieveUpdateDestroyAPIView):
 
 class RepliesListAPIView(APIView):
     serializer_class = RepliesSerializer
+    permission_classes = (RepliesPermission,)
     queryset = Vacancy.objects.all()
     lookup_field = 'slug'
-    permission_classes = (RepliesPermission,)
 
     def perform_create(self, serializer):
-        return serializer.save(creator_id=self.request.user,
-                               department=self.request.user.departments)
-
-    # def get_queryset(self):
-    #     return self.queryset
+        return serializer.save(
+            creator_id=self.request.user,
+            department=self.request.user.departments
+        )
 
     @swagger_auto_schema(
         operation_description='Returns a list of resumes and their '
-                              'creators who responded to the job.')
+                              'creators who responded to the job.'
+    )
     def get(self, request, *args, **kwargs):
         try:
             vacancy = get_object_or_404(self.queryset, slug=kwargs['vacancy_slug'])
@@ -70,23 +68,24 @@ class RepliesListAPIView(APIView):
                               'which contains an invitation to the position. '
                               'He must follow the link in it or add himself '
                               'to the open position.')
-    def patch(self, request, *args, **kwargs):
-        resume_error = Response({
+    def post(self, request, *args, **kwargs):
+        error = Response({
             'error': 'The employee did not post his or her '
                      'resume for the job search.'
         }, status=status.HTTP_404_NOT_FOUND)
+        resume_slug = request.GET.get('resume_slug')
 
         try:
-            resume = get_object_or_404(Resume.objects.all(), slug=request.GET.get('resume_slug'))
+            resume = get_object_or_404(Resume.objects.all(), slug=resume_slug)
         except Http404:
-            return resume_error
+            return error
 
         if not resume.is_published:
-            return resume_error
+            return error
 
         email = get_object_or_404(User.objects.all(), id=resume.creator_id.id).email
-        send_email(email, request, resume=request.GET.get('resume_slug'),
-                   vacancy=kwargs['vacancy_slug'])
+        vacancy = get_object_or_404(Vacancy.objects.all(), slug=kwargs['vacancy_slug'])
+        send_invite_email(email, request, resume=resume, vacancy=vacancy)
 
         return Response({
             'ok': f'You are invite {resume.title} resume to vacancy.'
@@ -96,8 +95,7 @@ class RepliesListAPIView(APIView):
         manual_parameters=[swagger_param('resume_slug', 'Reject resume on vacancy')],
         operation_description='Removes the resume from the '
                               'list of those who responded to the '
-                              'job. This is essentially a rejection.'
-    )
+                              'job. This is essentially a rejection.')
     def delete(self, request, *args, **kwargs):
         try:
             resume = get_object_or_404(Resume.objects.all(), slug=request.GET.get('resume_slug'))
@@ -108,9 +106,7 @@ class RepliesListAPIView(APIView):
             }, status=status.HTTP_404_NOT_FOUND)
 
         vacancy.resumes.remove(resume)
-        return Response({
-            'ok': f'You are reject {resume.title} resume.'
-        }, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class RespondAPIView(APIView):
@@ -161,9 +157,9 @@ class VacancyStatusAPIView(APIView):
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             if serializer.data["is_published"] is True:
-                response = {'ok': 'Vacancy status is open',}
+                response = {'ok': 'Vacancy status is open', }
             else:
-                response = {'ok': 'Vacancy status is close',}
+                response = {'ok': 'Vacancy status is close', }
 
             return Response(response, status=status.HTTP_200_OK)
 

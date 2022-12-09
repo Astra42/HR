@@ -2,23 +2,21 @@ from django.conf import settings
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from drf_yasg import openapi
-
-from user.models.user import User
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.urls import reverse
 
 
-def send_email(email, request, resume, vacancy):
-    '''
-        Sends a confirmation link by email. (refresh token)
-    '''
+def send_invite_email(email, request, resume, vacancy):
+    """Sends a confirmation link by email. (refresh token)"""
 
-    absurl = 'http://127.0.0.1:8000/vacancies/' + vacancy + '/respond'
-    email_body = 'Hi!\nYou will be invite on vacancy!  \n' + absurl
+    current_site = get_current_site(request).domain
+    relative_link = reverse('vacancies')
+    abs_url = 'http://' + current_site + '/api/vacancies/' + vacancy.slug + '/respond'
+    email_body = 'Hi!\nYou will be invite on vacancy!  \n' + abs_url
+
     data = {
         'email_body': email_body,
         'to_email': email,
-        'email_subject': 'You will be invite on vacancy!'}
+        'email_subject': f'Your resume {resume.title} will be invite on vacancy {vacancy.title}!'}
     # Send
     email = EmailMessage(
         subject=data['email_subject'],
@@ -29,9 +27,7 @@ def send_email(email, request, resume, vacancy):
     email.send()
 
 
-def swagger_param(title: str,
-                  desc: str,
-                  req: bool = True,
+def swagger_param(title: str, desc: str, req: bool = True,
                   type=openapi.TYPE_STRING) -> openapi.Parameter:
     return openapi.Parameter(
         title, in_=openapi.IN_QUERY, description=desc,
