@@ -12,11 +12,7 @@ function Resumes(props) {
     useEffect(() => {
         props.loadAvailableResumes();
     }, []);
-
-    if (!props.isAuthenticated) {
-        return <Navigate to='/login' replace />;
-    }
-
+    
     return (
         <div style={{ display: 'flex', marginTop: '3%', flexDirection: 'column', alignItems: 'center', maxHeight: '80%' }}>
             <div className='vacancies'>
@@ -36,7 +32,7 @@ function Resumes(props) {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
-        resumes: state.resumes.list,
+        resumes: state.resumes.resumes,
     };
 }
 

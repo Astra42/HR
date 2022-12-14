@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import { replyOnVacancy } from '../../actions/vacancies';
-
-import axios from 'axios';
+import { replyOnVacancy, loadVacancyBySlug } from '../../actions/vacancies';
 
 function Vacancy(props) {
     const { slug } = useParams();
@@ -12,25 +10,8 @@ function Vacancy(props) {
     const [vacancy, setVacancy] = useState(null);
 
     useEffect(() => {
-        const getVacancy = async data => {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `JWT ${localStorage.getItem('access')}`,
-                    Accept: 'application/json',
-                },
-            };
-
-            try {
-                let res = await axios.get(`${process.env.REACT_APP_API_URL}/vacancies/${data.slug}`, config);
-
-                setVacancy(res.data);
-            } catch (error) {
-                setVacancy(null);
-            }
-        };
-
-        getVacancy({ slug: slug });
+        loadVacancyBySlug({slug: slug})
+            .then((v) => setVacancy(v));
     }, []);
 
     if (!vacancy) {

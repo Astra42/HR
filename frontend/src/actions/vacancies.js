@@ -1,66 +1,70 @@
-import axios from 'axios';
-
 import { types } from './types';
+import VacanciesService from '../services/vacancies'
 
-export const loadAvailableVacancies = () => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
+export const loadAvailableVacancies = () => dispatch => {
+    return VacanciesService.loadAvailableVacancies().then(
+        data => {
+            dispatch({type: types.vacancies.LOAD_AVAILABLE_VACANCIES_SUCCES, payload: data});
+
+            return Promise.resolve();
         },
-    };
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
 
-    try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/vacancies/`, config);
+            dispatch({ type: types.vacancies.LOAD_AVAILABLE_VACANCIES_FAIL });
 
-        dispatch({
-            type: types.vacancies.LOAD_AVAILABLE_VACANCIES_SUCCES,
-            payload: res.data,
-        });
-    } catch (error) {
-        dispatch({
-            type: types.vacancies.LOAD_AVAILABLE_VACANCIES_FAIL,
-        });
-    }
+            return Promise.reject();
+        }
+    )
 };
 
-export const createNewVacancy = data => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `JWT ${localStorage.getItem('access')}`,
-            Accept: 'application/json',
+export const loadVacancyBySlug = data => {
+    return VacanciesService.loadVacancyBySlug(data).then(
+        data => {
+            return data;
         },
-    };
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
 
-    const body = JSON.stringify({ ...data });
-
-    try {
-        await axios.post(`${process.env.REACT_APP_API_URL}/vacancies/`, body, config);
-
-        dispatch({
-            type: types.vacancies.CREATE_NEW_VACANCY_SUCCES,
-        });
-    } catch (error) {
-        dispatch({
-            type: types.vacancies.CREATE_NEW_VACANCY_FAIL,
-        });
-    }
+            return Promise.reject();
+        }
+    )
 };
 
-export async function replyOnVacancy(data) {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `JWT ${localStorage.getItem('access')}`,
-            Accept: 'application/json',
+export const createNewVacancy = data => {
+    return VacanciesService.createNewVacancy(data).then(
+        data => {
+            return Promise.resolve();
         },
-    };
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
 
-    try {
-        let res = await axios
-            .patch(`${process.env.REACT_APP_API_URL}/vacancies/${data.slug}/respond`, config)
-    } catch (error) {
-        return null;
-    }
-}
+            return Promise.reject();
+        }
+    )
+};
+
+export const replyOnVacancy = data => {
+    return VacanciesService.replyOnVacancy(data).then(
+        data => {
+            return Promise.resolve();
+        },
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
+
+            return Promise.reject();
+        }
+    )
+};

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import axios from 'axios';
+import { loadResumeBySlug } from '../../actions/resumes';
 
 function Resume(props) {
     const { slug } = useParams();
@@ -10,25 +10,8 @@ function Resume(props) {
     const [resume, setResume] = useState(null);
 
     useEffect(() => {
-        const getResume = async data => {
-            const config = {
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `JWT ${localStorage.getItem('access')}`,
-                    Accept: 'application/json',
-                },
-            };
-
-            try {
-                let res = await axios.get(`${process.env.REACT_APP_API_URL}/resumes/${data.slug}`, config);
-
-                setResume(res.data);
-            } catch (error) {
-                setResume(null);
-            }
-        };
-
-        getResume({ slug: slug });
+        loadResumeBySlug({slug: slug})
+            .then(r => setResume(r))
     }, []);
 
     if (!resume) {
@@ -62,4 +45,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {})(Resume);
+export default connect(mapStateToProps, {  })(Resume);

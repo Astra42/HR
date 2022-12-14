@@ -13,19 +13,13 @@ function AddResume(props) {
         description: '',
     });
 
-    if (!props.isAuthenticated) {
-        return <Navigate to='/login' replace />;
-    }
-
     function handleChange(e) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-
-        console.log(formData);
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-        props.createNewResume(formData);
+        createNewResume(formData);
     }
 
     const inputs = [
@@ -78,4 +72,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { createNewResume })(AddResume);
+export default connect(mapStateToProps, {  })(AddResume);

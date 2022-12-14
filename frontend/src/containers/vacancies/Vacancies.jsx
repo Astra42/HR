@@ -45,7 +45,7 @@ function Vacancies(props) {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
-        vacancies: state.vacancies.list,
+        vacancies: state.vacancies.vacancies,
         profile: state.auth.profile,
     };
 }

@@ -1,7 +1,7 @@
 import { types } from '../actions/types';
 
 const initialState = {
-    list: [],
+    resumes: [],
 };
 
 export function resumesReducer(state = initialState, action) {
@@ -11,15 +11,13 @@ export function resumesReducer(state = initialState, action) {
         case types.resumes.LOAD_AVAILABLE_RESUMES_SUCCES:
             return {
                 ...state,
-                list: payload.results,
+                resumes: payload.results,
             };
         case types.resumes.LOAD_AVAILABLE_RESUMES_FAIL:
             return {
                 ...state,
-                list: [],
+                resumes: [],
             };
-        case types.resumes.CREATE_NEW_RESUME_SUCCES:
-        case types.resumes.CREATE_NEW_RESUME_FAIL:
         default:
             return state;
     }

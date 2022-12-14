@@ -9,10 +9,6 @@ function Profile(props) {
         props.loadUser();
     }, []);
 
-    if (!props.isAuthenticated) {
-        return <Navigate to='/login' replace />;
-    }
-
     if (props.profile === null) {
         return <></>;
     }

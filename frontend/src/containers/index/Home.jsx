@@ -1,13 +1,8 @@
 import React from 'react';
-import { Navigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { logout } from '../../actions/auth';
 
 function Home(props) {
-    if (!props.isAuthenticated) {
-        return <Navigate to='/login' replace />;
-    }
-
     return (
         <div className='container'>
             <div className='jumbotron mt-5'>

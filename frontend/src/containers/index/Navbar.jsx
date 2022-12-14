@@ -54,7 +54,6 @@ function Navbar(props) {
 
 function mapStateToProps(state) {
     return {
-        isAuthenticated: state.auth.isAuthenticated,
         profile: state.auth.profile,
     };
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 
 import { login } from '../../actions/auth';
@@ -8,8 +8,13 @@ import { login } from '../../actions/auth';
 import '../../css/auth.css';
 
 function Login(props) {
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const from = location.state?.from?.pathname || '/';
+
     if (props.isAuthenticated) {
-        return <Navigate to='/' replace />;
+        return <Navigate to={from} replace />;
     }
 
     const inputFields = [

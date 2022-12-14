@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Navigate, useNavigate, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import FormInput from '../../components/FormInput';
 
@@ -15,20 +15,13 @@ function AddVacancy(props) {
         description: '',
     });
 
-    if (!props.isAuthenticated) {
-        return <Navigate to='/login' replace />;
-    }
-
     function handleChange(e) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
-
-        console.log(formData);
     }
 
     function handleSubmit(e) {
         e.preventDefault();
-
-        props.createNewVacancy(formData);
+        createNewVacancy(formData);
     }
 
     const inputs = [
@@ -38,7 +31,6 @@ function AddVacancy(props) {
             label: 'Должность',
             name: 'title',
             required: true,
-            errorMessages: ['Это поле не может быть пустым!'],
         },
         {
             type: 'number',
@@ -46,7 +38,6 @@ function AddVacancy(props) {
             label: 'Минимальная з/п',
             name: 'salary_from',
             required: true,
-            errorMessages: ['Это поле не может быть пустым!'],
         },
         {
             type: 'number',
@@ -54,7 +45,6 @@ function AddVacancy(props) {
             label: 'Максимальная з/п',
             name: 'salary_to',
             required: true,
-            errorMessages: ['Это поле не может быть пустым!'],
         },
         {
             type: 'text',
@@ -62,7 +52,6 @@ function AddVacancy(props) {
             label: 'Навыки',
             name: 'qualification',
             required: true,
-            errorMessages: ['Это поле не может быть пустым!'],
         },
     ];
 
@@ -93,4 +82,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { createNewVacancy })(AddVacancy);
+export default connect(mapStateToProps, {  })(AddVacancy);

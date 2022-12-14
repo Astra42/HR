@@ -1,42 +1,54 @@
-import axios from 'axios';
-
 import { types } from './types';
+import ResumesService from '../services/resumes'
 
-export const createNewResume = data => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `JWT ${localStorage.getItem('access')}`,
-            Accept: 'application/json',
+export const loadAvailableResumes = () => dispatch => {
+    return ResumesService.loadAvailableResumes().then(
+        data => {
+            dispatch({type: types.resumes.LOAD_AVAILABLE_RESUMES_SUCCES, payload: data});
+
+            return Promise.resolve();
         },
-    };
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
 
-    const body = JSON.stringify({ ...data });
+            dispatch({ type: types.resumes.LOAD_AVAILABLE_RESUMES_FAIL });
 
-    try {
-        await axios.post(`${process.env.REACT_APP_API_URL}/resumes/`, body, config)
-    } catch (error) {}
+            return Promise.reject();
+        }
+    )
 };
 
-export const loadAvailableResumes = () => async dispatch => {
-    const config = {
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: `JWT ${localStorage.getItem('access')}`,
-            Accept: 'application/json',
+export const loadResumeBySlug = data => {
+    return ResumesService.loadResumeBySlug(data).then(
+        data => {
+            return data;
         },
-    };
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
 
-    try {
-        const res = await axios.get(`${process.env.REACT_APP_API_URL}/resumes/`, config);
+            return Promise.reject();
+        }
+    )
+};
 
-        dispatch({
-            type: types.resumes.LOAD_AVAILABLE_RESUMES_SUCCES,
-            payload: res.data,
-        });
-    } catch (error) {
-        dispatch({
-            type: types.resumes.LOAD_AVAILABLE_RESUMES_FAIL,
-        });
-    }
+export const createNewResume = data => {
+    return ResumesService.createNewResume(data).then(
+        data => {
+            return Promise.resolve();
+        },
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
+
+            return Promise.reject();
+        }
+    )
 };
