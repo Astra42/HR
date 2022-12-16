@@ -10,7 +10,8 @@ from django.utils.http import urlsafe_base64_encode
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.generics import UpdateAPIView, GenericAPIView, RetrieveAPIView
+from rest_framework.generics import UpdateAPIView, GenericAPIView, \
+    RetrieveAPIView, CreateAPIView, DestroyAPIView
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -18,6 +19,7 @@ from rest_framework.views import APIView
 from config import settings
 from user.serializers.profile import *
 from vacancies.utils import swagger_param
+from django_countries import countries
 
 
 class CustomRedirect(HttpResponsePermanentRedirect):
@@ -39,26 +41,9 @@ class MyProfileAPI(APIView):
 
 
 class UpdateProfileView(UpdateAPIView):
+    lookup_field = 'username'
+    queryset = User.objects.all()
     serializer_class = UpdateUserSerializer
-
-    def get_object(self):
-        return self.request.user
-
-    def patch(self, request, *args, **kwargs):
-        user = self.get_object()
-        serializer = self.serializer_class(user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            response = {
-                'status': 'success',
-                'code': status.HTTP_200_OK,
-                'message': 'Password updated successfully',
-                'data': []
-            }
-
-            return Response(serializer.data)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProfileAPI(RetrieveAPIView):
@@ -199,3 +184,55 @@ class SetNewPasswordAPIView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         return Response({'success': True, 'message': 'Password reset success'},
                         status=status.HTTP_200_OK)
+
+
+class CountryList(GenericAPIView):
+    @swagger_auto_schema(
+        operation_description='List countries codes and names.')
+    def get(self, request, *args, **kwargs):
+        data = {}
+        for code, name in countries.countries.items():
+            data[code] = name
+        return Response(data)
+
+
+class PhoneAPI(CreateAPIView, DestroyAPIView):
+    serializer_class = PhoneSerializer
+    queryset = Phone.objects.all()
+
+    @swagger_auto_schema(
+        operation_description='Add phone number to account')
+    def post(self, request, *args, **kwargs):
+        try:
+            phone = get_object_or_404(self.queryset, number=request.data['number'])
+            return Response({
+                'error': 'This phone number is already busy.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Http404:
+            request.data['number'] = '+' + request.data['number']
+            return self.create(request, *args, **kwargs)
+
+    def perform_create(self, serializer):
+        return serializer.save(user=self.request.user)
+
+
+    @swagger_auto_schema(
+        manual_parameters=[swagger_param('number', 'phone number')],
+        operation_description='Delete phone number from account')
+    def delete(self, request, *args, **kwargs):
+        try:
+            number = request.GET.get('number')
+            phone = get_object_or_404(self.queryset, number=number)
+            if phone.user == request.user:
+                request.data['number'] = number
+                self.perform_destroy(phone)
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response({
+                'error': 'This phone does not belong to you.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Http404:
+            return Response({
+                'error': 'This phone does not exist.'
+            }, status=status.HTTP_400_BAD_REQUEST)

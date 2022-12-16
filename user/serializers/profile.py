@@ -2,8 +2,10 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django_countries.serializer_fields import CountryField
+from django_countries import countries
 from rest_framework import serializers
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from phonenumber_field.serializerfields import PhoneNumberField
 
 from user.models.departments import Department
 from user.models.phone import Phone
@@ -37,13 +39,18 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class PhoneSerializer(serializers.ModelSerializer):
-    number = serializers.CharField()
+    number = PhoneNumberField()
 
     class Meta:
         model = Phone
         fields = [
+            'user',
             'number',
         ]
+        extra_kwargs = {
+            'user': {'required': False, 'read_only': True, },
+        }
+
 
 
 class ProfileSerializer(serializers.Serializer):
@@ -68,23 +75,25 @@ class ProfileSerializer(serializers.Serializer):
         fields = ('phones',)
 
 
-class UpdateUserSerializer(serializers.Serializer):
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
-    birth_date = serializers.DateField()
-    country = CountryField(name_only=True)
-    photo = serializers.ImageField()
-    phone_set = PhoneSerializer(many=True, read_only=True)
+class UpdateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(required=False)
+    first_name = serializers.CharField(required=False)
+    last_name = serializers.CharField(required=False)
+    username = serializers.CharField(required=False)
+    birth_date = serializers.DateField(required=False)
+    photo = serializers.ImageField(required=False)
+    country = CountryField(required=False)
+    about_me = serializers.CharField(required=False)
 
     class Meta:
         model = User
-        extra_kwargs = {
-            'first_name': {'required': False},
-            'last_name': {'required': False},
-            'email': {'required': False}
-        }
+        fields = [
+            'email', 'first_name', 'last_name', 'username', 'birth_date',
+            'photo', 'country', 'about_me',
+        ]
 
     def validate_email(self, value):
+        print(self.context)
         user = self.context['request'].user
         if User.objects.exclude(pk=user.pk).filter(email=value).exists():
             raise serializers.ValidationError({"email": "This email is already in use."})
@@ -97,7 +106,12 @@ class UpdateUserSerializer(serializers.Serializer):
         return value
 
     def update(self, instance, validated_data):
-        print(validated_data)
+        user = self.context['request'].user
+
+        if user.pk != instance.pk:
+            raise serializers.ValidationError(
+                {"authorize": "You dont have permission for this user."})
+
         if 'first_name' in validated_data:
             instance.first_name = validated_data['first_name']
         if 'last_name' in validated_data:
@@ -106,11 +120,16 @@ class UpdateUserSerializer(serializers.Serializer):
             instance.email = validated_data['email']
         if 'username' in validated_data:
             instance.username = validated_data['username']
+        if 'country' in validated_data:
+            for code, name in countries.countries.items():
+                print(validated_data['country'])
+                if code == validated_data['country']:
+                    print(name)
+                    instance.country = code
 
         instance.save()
 
         return instance
-
 
 
 class ChangePasswordSerializer(serializers.Serializer):

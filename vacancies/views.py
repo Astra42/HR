@@ -10,6 +10,7 @@ from .serializers import *
 from .utils import *
 
 
+
 class VacancyListAPIView(ListCreateAPIView):
     serializer_class = VacancySerializer
     permission_classes = (IsNotEmployee,)
