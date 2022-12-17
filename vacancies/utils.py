@@ -3,6 +3,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import EmailMessage
 from drf_yasg import openapi
 from django.urls import reverse
+from user.utils import send_email
 
 
 def send_invite_email(email, request, resume, vacancy):
@@ -16,15 +17,9 @@ def send_invite_email(email, request, resume, vacancy):
     data = {
         'email_body': email_body,
         'to_email': email,
-        'email_subject': f'Your resume {resume.title} will be invite on vacancy {vacancy.title}!'}
-    # Send
-    email = EmailMessage(
-        subject=data['email_subject'],
-        body=data['email_body'],
-        to=[data['to_email']],
-        from_email=settings.EMAIL_HOST_USER + '@yandex.ru',
-    )
-    email.send()
+        'email_subject': f'Your resume {resume.title} will be invite on vacancy {vacancy.title}!'
+    }
+    send_email(data)
 
 
 def swagger_param(title: str, desc: str, req: bool = True,
