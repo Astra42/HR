@@ -1,14 +1,13 @@
 from django.http import Http404
-from rest_framework import status
+from rest_framework import status, mixins
 from rest_framework.generics import ListCreateAPIView, \
-    RetrieveUpdateDestroyAPIView
+    RetrieveUpdateDestroyAPIView, GenericAPIView
 from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.views import APIView
 from config.permissions import *
 from .serializers import *
 from .utils import *
-
 
 
 class VacancyListAPIView(ListCreateAPIView):
@@ -23,6 +22,23 @@ class VacancyListAPIView(ListCreateAPIView):
 
     def get_queryset(self):
         return Vacancy.objects.filter(is_published=True)
+
+
+class DepVacancyListAPIView(mixins.ListModelMixin, GenericAPIView):
+    permission_classes = (IsNotEmployee,)
+    serializer_class = VacancySerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        vacancies = Vacancy.objects.filter(department=user.departments,
+                                           creator_id=user.id)
+        return vacancies
+
+    @swagger_auto_schema(
+        operation_description='Department vacancies list.'
+    )
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
 
 
 class VacancyDetailAPIView(RetrieveUpdateDestroyAPIView):

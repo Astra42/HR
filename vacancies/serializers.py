@@ -12,7 +12,7 @@ class VacancySerializer(serializers.ModelSerializer):
         model = Vacancy
         fields = [
             'title', 'salary_from', 'salary_to', 'qualification',
-            'description', 'slug',
+            'description', 'slug', 'department'
         ]
         lookup_field = 'slug'
 

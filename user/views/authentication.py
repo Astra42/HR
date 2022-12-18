@@ -70,7 +70,6 @@ class VerifyEmailAPIView(views.APIView):
 
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            print(payload)
             user = User.objects.get(id=payload['user_id'])
             if not user.is_verified:
                 user.is_verified = True
