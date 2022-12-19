@@ -1,15 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
+import { Typography, Box, Modal } from '@mui/material';
 
 import { signup } from '../../actions/auth';
 
 import '../../css/auth.css';
 
 function Signup(props) {
+    const [responseErrors, setResponseErrors] = useState({ username: null, email: null });
+    const [errorModalActive, setErrorModalActive] = useState(false);
+    const [successModalActive, setSuccessModalActive] = useState(false);
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const from = location.state?.from?.pathname || '/';
+
     if (props.isAuthenticated) {
-        return <Navigate to='/' replace />;
+        return <Navigate to={from}/>;
     }
 
     const inputFields = {
@@ -51,29 +61,6 @@ function Signup(props) {
         },
     };
 
-    function handleChange(e) {
-        switch (e.target.name) {
-            case 'password': {
-                let errors = [];
-
-                if (!e.target.value.match(/[0-9]/g)) {
-                    errors.push('Пароль должен содержать цифры!');
-                }
-
-                if (!e.target.value.match(/[A-Za-z]/g)) {
-                    errors.push('Пароль должен содержать латинские буквы!');
-                }
-
-                if (e.target.value.length < 8) {
-                    errors.push('Пароль должен содержать не меньше 8 символов!');
-                }
-                break;
-            }
-            default:
-                break;
-        }
-    }
-
     function validate(values) {
         let errors = {};
 
@@ -100,10 +87,24 @@ function Signup(props) {
         let error;
 
         if (!value) {
-            error = 'Required!'
+            error = 'Required!';
         }
 
         return error;
+    }
+
+    function handleSubmit(values) {
+        props.signup(values).then(response => {
+            const data = response?.data;
+
+            if (data) {
+                setResponseErrors({ username: data?.username, email: data?.email });
+                setErrorModalActive(true);
+            }
+            else {
+                setSuccessModalActive(true);
+            }
+        });
     }
 
     return (
@@ -121,7 +122,7 @@ function Signup(props) {
                         password: '',
                         password2: '',
                     }}
-                    onSubmit={values => props.signup(values)}
+                    onSubmit={values => handleSubmit(values)}
                     validate={validate}
                 >
                     {({ errors, touched }) => (
@@ -151,8 +152,10 @@ function Signup(props) {
                             />
                             <Field
                                 className={`form-control mt-3 ${
-                                    (errors.email || errors.emailInvalid) && touched.email ? 'invalid-field mb-2' : 'mb-3'
-                                } ${errors.emailInvalid && errors.email ? 'mb-3' : null}`}
+                                    (errors.email || errors.emailInvalid || errors.emailAlreadyUsed) && touched.email
+                                        ? 'invalid-field mb-2'
+                                        : 'mb-3'
+                                } ${(errors.emailInvalid || errors.emailAlreadyUsed) && errors.email ? 'mb-3' : null}`}
                                 validate={validateRequired}
                                 {...inputFields.email}
                             />
@@ -161,7 +164,15 @@ function Signup(props) {
                                     {errors.emailInvalid}
                                 </div>
                             ) : null}
-                            <div className='pb-2 mt-2' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                            {!errors.email && errors.emailAlreadyUsed && touched.email ? (
+                                <div className='mt-1' style={{ color: '#f75050', fontSize: '0.9rem' }}>
+                                    {errors.emailAlreadyUsed}
+                                </div>
+                            ) : null}
+                            <div
+                                className='pb-2 mt-2'
+                                style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}
+                            >
                                 <Field
                                     className={`form-control ${
                                         (errors.password ||
@@ -216,6 +227,20 @@ function Signup(props) {
                                     className='btn btn-success sign-in fw-600 rounded-5'
                                     type='submit'
                                     style={{ width: '100%' }}
+                                    disabled={
+                                        errors.first_name ||
+                                        errors.last_name ||
+                                        errors.username ||
+                                        errors.email ||
+                                        errors.emailInvalid ||
+                                        errors.password ||
+                                        errors.password2 ||
+                                        errors.password2Unsimilar ||
+                                        errors.passwordNumbers ||
+                                        errors.passwordLetters ||
+                                        errors.passwordLength ||
+                                        !touched.first_name
+                                    }
                                 >
                                     Зарегистрироваться
                                 </button>
@@ -232,6 +257,72 @@ function Signup(props) {
                     )}
                 </Formik>
             </div>
+            <Modal
+                open={errorModalActive}
+                onClose={() => setErrorModalActive(false)}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+            >
+                <Box
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '26rem',
+                        backgroundColor: '#ad3434',
+                        padding: '0.5rem',
+                        borderRadius: '0.4rem',
+                    }}
+                >
+                    <Typography id='modal-modal-title' variant='h6' component='h2'>
+                        Данные поля должны быть уникальны:
+                    </Typography>
+                    <hr className='my-1' style={{color: 'black'}}/>
+                    <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                        {responseErrors.username ? (
+                            <span>
+                                <span style={{ fontWeight: 'bold' }}>Логин:</span> данное имя пользователя уже занято!
+                            </span>
+                        ) : null}
+                    </Typography>
+                    <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                        {responseErrors.email ? (
+                            <span>
+                                <span style={{ fontWeight: 'bold' }}>Email:</span> пользователь с данным адресом почты
+                                уже зарегистрирован!
+                            </span>
+                        ) : null}
+                    </Typography>
+                </Box>
+            </Modal>
+            <Modal
+                open={successModalActive}
+                onClose={() => {setSuccessModalActive(false); navigate('/login', {replace: true}); }}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+            >
+                <Box
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '26rem',
+                        backgroundColor: '#2c892c',
+                        padding: '0.5rem',
+                        borderRadius: '0.4rem',
+                    }}
+                >
+                    <Typography id='modal-modal-title' variant='h6' component='h2'>
+                        Регистрация прошла успешно:
+                    </Typography>
+                    <hr className='my-1' style={{color: 'black'}}/>
+                    <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                        Перейдите на почту, дабы <span style={{ fontWeight: 'bold' }}>активировать</span> аккаунт!
+                    </Typography>
+                </Box>
+            </Modal>
         </div>
     );
 }

@@ -26,6 +26,9 @@ function Profile(props) {
                 <NavLink className='btn btn-success mt-2' to='/resumes/add' >
                     Добавить резюме
                 </NavLink>
+                <NavLink className='btn btn-info mt-2' to='/profile/update' >
+                    Изменить профиль
+                </NavLink>
             </div>
         </div>
     );

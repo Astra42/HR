@@ -14,7 +14,7 @@ function Resumes(props) {
     }, []);
     
     return (
-        <div style={{ display: 'flex', marginTop: '3%', flexDirection: 'column', alignItems: 'center', maxHeight: '80%' }}>
+        <div style={{ display: 'flex', padding: '1rem', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
             <div className='vacancies'>
                 {props.resumes.map((resume, index) => (
                     <ShortResume

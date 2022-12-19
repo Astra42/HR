@@ -9,20 +9,18 @@ import { Provider } from 'react-redux';
 import { store } from './store';
 import { setupInterceptors } from './services/api';
 
+setupInterceptors(store.dispatch);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <BrowserRouter>
-            <Provider store={store}>
-                <Routes>
-                    <Route path='/*' element={<App />} />
-                </Routes>
-            </Provider>
-        </BrowserRouter>
+        <Provider store={store}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </Provider>
     </React.StrictMode>
 );
-
-setupInterceptors(store.dispatch)
 
 window.store = store;
 

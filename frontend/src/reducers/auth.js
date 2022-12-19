@@ -9,7 +9,6 @@ export function authReducer(state = initialState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case types.auth.SIGNUP_SUCCCES:
         case types.auth.LOGIN_SUCCCES:
         case types.auth.AUTHENTICATED_SUCCES:
             return {
@@ -29,6 +28,7 @@ export function authReducer(state = initialState, action) {
                 isAuthenticated: false,
                 profile: null,
             };
+        case types.auth.SIGNUP_SUCCCES:
         case types.auth.AUTHENTICATED_FAIL:
             return {
                 ...state,

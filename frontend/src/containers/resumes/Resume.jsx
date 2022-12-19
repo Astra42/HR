@@ -19,7 +19,7 @@ function Resume(props) {
     }
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>
             <div className='vacancy'>
                 <div>
                     <div style={{ overflowWrap: 'break-word' }}>
@@ -27,7 +27,7 @@ function Resume(props) {
                     </div>
                 </div>
                 <div style={{ color: 'lightblue ' }}>
-                    Описание:
+                    О себе:
                     <div style={{ overflowWrap: 'break-word' }}>{resume.description}</div>
                 </div>
                 <div style={{ color: 'lightblue ' }}>

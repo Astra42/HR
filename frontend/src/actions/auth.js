@@ -12,14 +12,9 @@ export const login = data => dispatch => {
             return Promise.resolve();
         },
         error => {
-            // const message =
-            //     (error.response && error.response.data && error.response.data.message) ||
-            //     error.message ||
-            //     error.toString();
-
             dispatch({ type: types.auth.LOGIN_FAIL });
 
-            return Promise.reject();
+            return error.response;
         }
     );
 };
@@ -32,14 +27,9 @@ export const signup = data => dispatch => {
             return Promise.resolve();
         },
         error => {
-            // const message =
-            //     (error.response && error.response.data && error.response.data.message) ||
-            //     error.message ||
-            //     error.toString();
-
             dispatch({ type: types.auth.SIGNUP_FAIL });
 
-            return Promise.reject();
+            return error.response;
         }
     );
 };
@@ -49,7 +39,6 @@ export const loadUser = () => dispatch => {
         return AuthService.loadUser().then(
             data => {
                 dispatch({ type: types.auth.USER_LOADED_SUCCES, payload: data });
-
     
                 return Promise.resolve();   
             },
@@ -69,7 +58,7 @@ export const loadUser = () => dispatch => {
     }
 };
 
-export const checkAuthenticated = () => dispatch => {
+export const checkAuthenticated = () =>  dispatch => {
     if (TokenService.getLocalAccessToken()) {
         return AuthService.checkAuthenticated().then(
             data => {
@@ -112,3 +101,42 @@ export const logout = () => dispatch => {
         );
     }
 };
+
+export const updateProfile = (data, username) => dispatch => {
+    if (TokenService.getLocalAccessToken()) {
+        return AuthService.updateProfile(data, username).then(
+            data => {    
+                dispatch(loadUser());
+    
+                return Promise.resolve();   
+            },
+            error => {
+                // const message =
+                //     (error.response && error.response.data && error.response.data.message) ||
+                //     error.message ||
+                //     error.toString();
+    
+                return error.response;
+            }
+        );
+    }
+}
+
+export const loadCountries = () => {
+    if (TokenService.getLocalAccessToken()) {
+        return AuthService.loadCountries().then(
+            data => {        
+                return data;
+            },
+            error => {
+                // const message =
+                //     (error.response && error.response.data && error.response.data.message) ||
+                //     error.message ||
+                //     error.toString();
+                console.log(error.response);
+    
+                return error.response;
+            }
+        );
+    }
+}

@@ -3,7 +3,6 @@ import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import logo from '../../svg/logo.svg';
-import profile from '../../svg/profile.svg';
 
 import Navbar from './Navbar';
 
@@ -25,22 +24,6 @@ function Header(props) {
                         </NavLink>
                     </div>
                     <Navbar />
-                    <div style={{ flex: '1' }} />
-                    <div style={{ marginRight: '10%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                        <NavLink to='/profile'>
-                            <img
-                                src={profile}
-                                alt='profile'
-                                style={{
-                                    width: '2.5rem',
-                                    height: '2.5rem',
-                                    borderRadius: '50%',
-                                    backgroundColor: 'white',
-                                    filter: 'invert(22%) sepia(9%) saturate(1455%) hue-rotate(186deg) brightness(97%) contrast(89%)',
-                                }}
-                            />
-                        </NavLink>
-                    </div>
                 </div>
             ) : (
                 <div style={{ height: '4rem', display: 'flex', alignItems: 'center', marginLeft: '10%' }}>

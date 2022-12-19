@@ -70,6 +70,32 @@ class AuthService {
                 }
             )
     }
+
+    updateProfile(data, username) {
+        const body = JSON.stringify({...data});
+
+        console.log(data)
+
+        return api
+            .patch(
+                `/user/update_profile/${username}/`, body
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
+    loadCountries() {
+        return api
+            .get(
+                '/user/counties/'
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
 }
 
 export default new AuthService();

@@ -155,3 +155,51 @@ input[type]:focus {
     border-color: #f75050;
     box-shadow: 0 0 0 0.1rem #f75050;
 }
+
+textarea[type] {
+    color: #faf9f8;
+    background-color: #61708f;
+}
+
+textarea[type]::-webkit-input-placeholder {
+    color: #e8e9f3;
+}
+
+textarea[type]::-webkit-input-placeholder:focus::-webkit-input-placeholder {
+    color: #e8e9f3;
+}
+
+textarea[type]:-moz-placeholder {
+    color: #e8e9f3;
+    opacity: 1;
+}
+
+textarea[type]:-moz-placeholder:focus:-moz-placeholder {
+    color: #e8e9f3;
+    opacity: 1;
+}
+
+textarea[type]::-moz-placeholder {
+    color: #e8e9f3;
+    opacity: 1;
+}
+
+textarea[type]::-moz-placeholder:focus::-moz-placeholder {
+    color: #e8e9f3;
+    opacity: 1;
+}
+
+textarea[type]:-ms-input-placeholder {
+    color: #e8e9f3;
+}
+
+textarea[type]:-ms-input-placeholder:focus:-ms-input-placeholder {
+    color: #e8e9f3;
+}
+
+textarea[type]:focus {
+    color: #faf9f8;
+    background-color: #61708f;
+    border-color: #faf9f8;
+    box-shadow: 0 0 0 0.1rem #e8e9f3;
+}

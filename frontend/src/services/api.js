@@ -34,7 +34,7 @@ export function setupInterceptors(dispatch) {
 
             const token = TokenService.getLocalRefreshToken();
             
-            if (originalConfig .url !== '/user/login/' && error.response) {
+            if (originalConfig.url !== '/user/login/' && error.response) {
                 if (error.response.status === 401 && !originalConfig._retry && token) {
                     originalConfig._retry = true;
 

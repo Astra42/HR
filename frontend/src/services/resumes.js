@@ -17,7 +17,7 @@ class ResumesService {
 
         return api
             .get(
-                `/resumes/${slug}`
+                `/resumes/${slug}/`
             ).then(
                 response => {
                     return response.data;

@@ -18,7 +18,7 @@ function Vacancies(props) {
     }
 
     return (
-        <div style={{ display: 'flex', marginTop: '3%', flexDirection: 'column', alignItems: 'center', maxHeight: '80%' }}>
+        <div style={{ display: 'flex', padding: '1rem', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
             <div className='vacancies'>
                 {props.vacancies.map((vacancy, index) => (
                     <ShortVacancy
@@ -29,15 +29,6 @@ function Vacancies(props) {
                     />
                 ))}
             </div>
-            {!props.profile || !props.profile.is_head ? null : (
-                <Link
-                    to='/vacancies/add'
-                    className='btn btn-success'
-                    style={{ marginTop: '2rem' }}
-                >
-                    Добавить вакансию
-                </Link>
-            )}
         </div>
     );
 }

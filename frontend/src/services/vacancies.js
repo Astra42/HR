@@ -17,7 +17,7 @@ class VacanciesService {
 
         return api
             .get(
-                `/vacancies/${slug}`
+                `/vacancies/${slug}/`
             ).then(
                 response => {
                     return response.data;
@@ -43,7 +43,7 @@ class VacanciesService {
 
         return api
             .patch(
-                `/vacancies/${slug}/respond`
+                `/vacancies/${slug}/respond/`
             ).then(
                 response => {
                     return response.data;

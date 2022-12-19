@@ -23,7 +23,7 @@ function Vacancy(props) {
     }
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>
             <div className='vacancy'>
                 <div>
                     <div style={{ display: 'flex', flexDirection: 'row', width: '100%'  }}>
@@ -44,8 +44,8 @@ function Vacancy(props) {
                         <div style={{ overflowWrap: 'break-word' }}>{vacancy.qualification}</div>
                     </div>
                     <div style={{ color: 'lightblue ' }}>
-                        Минимальная з/п:
-                        <div style={{ overflowWrap: 'break-word' }}>{vacancy.salary_from} руб.</div>
+                        Зарабатная плата:
+                        <div style={{ overflowWrap: 'break-word' }}>{vacancy.salary_from} - {vacancy.salary_to} руб.</div>
                     </div>
                 </div>
             </div>

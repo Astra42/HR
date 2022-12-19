@@ -1,20 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
+import { Typography, Box, Modal } from '@mui/material';
 
 import { login } from '../../actions/auth';
 
 import '../../css/auth.css';
 
 function Login(props) {
+    const [modalActive, setModalActive] = useState(false);
+    
     const location = useLocation();
     const navigate = useNavigate();
 
     const from = location.state?.from?.pathname || '/';
 
     if (props.isAuthenticated) {
-        return <Navigate to={from} replace />;
+        return <Navigate to={from} replace />
     }
 
     const inputFields = [
@@ -42,6 +45,16 @@ function Login(props) {
         return error;
     }
 
+    function handleSubmit(values) {
+        props.login(values).then(response => {
+            const data = response?.data;
+
+            if (data) {
+                setModalActive(true);
+            }
+        });
+    }
+
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <div style={{ width: '23rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
@@ -53,7 +66,7 @@ function Login(props) {
                         username: '',
                         password: '',
                     }}
-                    onSubmit={values => props.login(values)}
+                    onSubmit={values => handleSubmit(values)}
                 >
                     {({ errors, touched }) => (
                         <Form>
@@ -83,6 +96,7 @@ function Login(props) {
                                     className='btn btn-primary sign-in fw-600 rounded-5'
                                     type='submit'
                                     style={{ width: '100%' }}
+                                    disabled={errors.password || errors.username || !touched.username}
                                 >
                                     Войти
                                 </button>
@@ -99,6 +113,34 @@ function Login(props) {
                     )}
                 </Formik>
             </div>
+            <Modal
+                open={modalActive}
+                onClose={() => setModalActive(false)}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+            >
+                <Box
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '26rem',
+                        backgroundColor: '#ad3434',
+                        padding: '0.5rem',
+                        borderRadius: '0.4rem',
+                    }}
+                >
+                    <Typography id='modal-modal-title' variant='h6' component='h2'>
+                        Что-то пошло не так:
+                    </Typography>
+                    <hr className='my-1' style={{ color: 'black' }} />
+                    <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                        Ваши <span style={{ fontWeight: 'bold' }}>логин</span> и/или{' '}
+                        <span style={{ fontWeight: 'bold' }}>пароль</span> были введены неверно!
+                    </Typography>
+                </Box>
+            </Modal>
         </div>
     );
 }

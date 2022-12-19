@@ -186,7 +186,7 @@ class SetNewPasswordAPIView(GenericAPIView):
                         status=status.HTTP_200_OK)
 
 
-class CountryList(GenericAPIView):
+class CountryList(APIView):
     @swagger_auto_schema(
         operation_description='List countries codes and names.')
     def get(self, request, *args, **kwargs):
