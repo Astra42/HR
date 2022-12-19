@@ -22,4 +22,5 @@ urlpatterns = [
     path('password-reset-complete/', SetNewPasswordAPIView.as_view(), name='password-reset-complete'),
     path('counties/', CountryList.as_view(), name='country_list'),
     path('phones/', PhoneAPI.as_view(), name='phones'),
+    path('get_resume/', GetResumeAPI.as_view(), name='get_resume'),
 ]

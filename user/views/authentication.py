@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from config import settings
 from user.serializers.authentication import *
 from user.serializers.profile import *
-from user.utils import Util
+from user.utils import *
 
 
 class LoginAPIView(generics.GenericAPIView):
@@ -25,7 +25,7 @@ class LoginAPIView(generics.GenericAPIView):
         try:
             user = User.objects.get(username=username)
             if not user.is_verified:
-                Util.send_email({'email': user.email}, request)
+                send_email({'email': user.email}, request)
 
                 return Response({'ok': f'Hello, {user}! We sent you a confirmation email.'},  status=status.HTTP_200_OK)
         except:
@@ -48,8 +48,7 @@ class RegisterAPIView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         user_data = serializer.data
-
-        Util.send_email(user_data, request)
+        send_verify_email(user_data, request)
 
         return Response(user_data, status=status.HTTP_201_CREATED)
 
@@ -71,7 +70,6 @@ class VerifyEmailAPIView(views.APIView):
 
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
-            print(payload)
             user = User.objects.get(id=payload['user_id'])
             if not user.is_verified:
                 user.is_verified = True

@@ -4,6 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.VacancyListAPIView.as_view(), name='vacancies'),
+    path('dep_vacancies/', views.DepVacancyListAPIView.as_view(),
+         name='dep_vacancies'),
     path('<slug:slug>/', views.VacancyDetailAPIView.as_view(), name='vacancy'),
 
     # job posting reactions
