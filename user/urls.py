@@ -15,10 +15,7 @@ urlpatterns = [
     path('email_verify/', VerifyEmailAPIView.as_view(), name='email_verify'),
     path('change_password/', ChangePasswordAPIView.as_view(), name='auth_change_password'),
     path('my_profile/', MyProfileAPI.as_view(), name='my_profile'),
-    path('update_profile/<str:username>/', UpdateProfileView.as_view(), name='update_profile'),
 
-    # Profile by username
-    path('profile/<str:username>/', ProfileAPI.as_view(), name='profile'),
 
     # Password reset
     path('request-reset-email/', RequestPasswordResetEmail.as_view(), name="request-reset-email"),
@@ -30,5 +27,10 @@ urlpatterns = [
 
     # Country list for form
     path('counties/', CountryList.as_view(), name='country_list'),
+
+    path('update_profile/<str:username>/', UpdateProfileView.as_view(),name='update_profile'),
+
+    # Profile by username
+    path('profile/<str:username>/', ProfileAPI.as_view(), name='profile'),
 
 ]
