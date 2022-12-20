@@ -2,6 +2,7 @@ from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
 from resumes.models import Resume
+from resumes.serializers import ResumeSerializer
 from user.models import User
 from user.serializers.profile import PhoneSerializer, DepartmentSerializer
 from .models import Vacancy
@@ -32,19 +33,19 @@ class CreatorSerializer(serializers.ModelSerializer):
         ]
 
 
-class ResumeListSerializer(serializers.ModelSerializer):
-    creator_id = CreatorSerializer(read_only=True)
-
-    class Meta:
-        model = Resume
-        fields = [
-            'title',
-            'creator_id'
-        ]
+# class ResumeListSerializer(serializers.ModelSerializer):
+#     creator_id = CreatorSerializer(read_only=True)
+#
+#     class Meta:
+#         model = Resume
+#         fields = [
+#             'title',
+#             'creator_id'
+#         ]
 
 
 class RepliesSerializer(serializers.ModelSerializer):
-    resumes = ResumeListSerializer(read_only=True, many=True)
+    resumes = ResumeSerializer(read_only=True, many=True)
     lookup_field = 'slug'
 
     class Meta:
