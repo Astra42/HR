@@ -1,4 +1,5 @@
 from django.db import models
+import transliterate as tr
 
 
 class Department(models.Model):
@@ -11,7 +12,7 @@ class Department(models.Model):
             self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if not self.slug:
-            self.slug = f"{self.title}"
+            self.slug = tr.translit("в" + f"{self.title}", reversed=True)[1:]
         super(Department, self).save()
 
     class Meta:

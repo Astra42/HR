@@ -1,5 +1,6 @@
 from django.db import models
 from django.shortcuts import get_object_or_404
+import transliterate as tr
 
 from user.models.user import User
 
@@ -27,7 +28,7 @@ class Resume(models.Model):
             a = 0
             while Resume.objects.filter(slug=f"{respondent_name}-{a}").exists():
                 a += 1
-            self.slug = f"{respondent_name}-{a}"
+            self.slug = tr.translit('в' + f"{respondent_name}-{a}", reversed=True)[1:]
         super(Resume, self).save()
 
     class Meta:
