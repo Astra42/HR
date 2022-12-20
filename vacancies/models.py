@@ -1,5 +1,6 @@
 from resumes.models import *
 from user.models.departments import Department
+import transliterate as tr
 
 
 class Vacancy(models.Model):
@@ -33,7 +34,7 @@ class Vacancy(models.Model):
             while Vacancy.objects.filter(slug=f"{new_slug}-{a}").exists():
                 a += 1
 
-            self.slug = f"{new_slug}-{a}"
+            self.slug = tr.translit("в" + f"{new_slug}-{a}", reversed=True)[1:]
         super(Vacancy, self).save()
 
     class Meta:

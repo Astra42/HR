@@ -1,4 +1,4 @@
-import random
+import transliterate as tr
 
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
@@ -75,7 +75,7 @@ class User(AbstractBaseUser, PermissionsMixin):
             self, force_insert=False, force_update=False, using=None, update_fields=None
     ):
         if not self.slug:
-            self.slug = f"id-{generator.sequence_generator()}"
+            self.slug = tr.translit("в" + f"id-{generator.sequence_generator()}", reversed=True)[1:]
         super(User, self).save()
 
     def __str__(self):
