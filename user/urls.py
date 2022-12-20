@@ -28,9 +28,6 @@ urlpatterns = [
     # Phones POST or DELETE
     path('phones/', PhoneAPI.as_view(), name='phones'),
 
-    # Get request user resume
-    path('get_resume/', GetResumeAPI.as_view(), name='get_resume'),
-
     # Country list for form
     path('counties/', CountryList.as_view(), name='country_list'),
 
