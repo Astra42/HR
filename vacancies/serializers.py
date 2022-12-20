@@ -3,16 +3,18 @@ from rest_framework import serializers
 
 from resumes.models import Resume
 from user.models import User
-from user.serializers.profile import PhoneSerializer
+from user.serializers.profile import PhoneSerializer, DepartmentSerializer
 from .models import Vacancy
 
 
 class VacancySerializer(serializers.ModelSerializer):
+    department = DepartmentSerializer(read_only=True)
+
     class Meta:
         model = Vacancy
         fields = [
             'title', 'salary_from', 'salary_to', 'qualification',
-            'description', 'slug', 'department'
+            'description', 'slug', 'department',
         ]
         lookup_field = 'slug'
 
