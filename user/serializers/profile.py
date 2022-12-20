@@ -124,6 +124,12 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             for code, name in countries.countries.items():
                 if code == validated_data['country']:
                     instance.country = code
+        if 'about_me' in validated_data:
+            instance.about_me = validated_data['about_me']
+        if 'photo' in validated_data:
+            instance.photo = validated_data['photo']
+        if 'birth_date' in validated_data:
+            instance.birth_date = validated_data['birth_date']
 
         instance.save()
 
