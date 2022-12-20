@@ -96,6 +96,30 @@ class AuthService {
                 }
             )
     }
+
+    loadResume() {
+        return api
+            .get(
+                '/resumes/get_resume/'
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
+    resetPassword(data) {
+        const body = JSON.stringify({...data});
+
+        return api
+            .post(
+                '/user/request-reset-email/', body
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
 }
 
 export default new AuthService();

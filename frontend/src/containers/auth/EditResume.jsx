@@ -1,15 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Typography, Box, Modal } from '@mui/material';
 
-import { createNewVacancy } from '../../actions/vacancies';
+import { createNewResume, updateResume } from '../../actions/resumes';
+import { loadResume } from '../../actions/auth';
 
-function AddVacancy() {
+function EditResume(props) {
+    const [post, setPost] = useState(true);
+    const [resume, setResume] = useState(null);
+    const [modalActive, setModalActive] = useState(false);
+
+    useEffect(() => {
+        loadResume().then(r => {
+            setResume(r);
+            setPost(r?.status === 404);
+        });
+    }, []);
+
     const navigate = useNavigate();
 
-    const [modalActive, setModalActive] = useState(false);
+    if (!resume) {
+        return <></>;
+    }
 
     const inputFields = {
         title: {
@@ -18,27 +32,15 @@ function AddVacancy() {
             name: 'title',
             required: true,
         },
-        salary_from: {
-            type: 'number',
-            placeholder: 'Мин. з/п',
-            name: 'salary_from',
-            required: true,
-        },
-        salary_to: {
-            type: 'number',
-            placeholder: 'Макс. з/п',
-            name: 'salary_to',
-            required: true,
-        },
-        qualification: {
+        experience: {
             type: 'text',
-            placeholder: 'Навыки',
-            name: 'qualification',
+            placeholder: 'Опыт',
+            name: 'experience',
             required: true,
         },
         description: {
             type: 'text',
-            placeholder: 'Описание',
+            placeholder: 'О себе',
             name: 'description',
             required: true,
         },
@@ -55,24 +57,28 @@ function AddVacancy() {
     }
 
     function handleSubmit(values) {
-        createNewVacancy(values).then(response => {
-            setModalActive(true);
-        });
+        if (post) {
+            createNewResume(values).then(response => {
+                setModalActive(true);
+            });
+        } else {
+            updateResume(resume.slug, values).then(response => {
+                setModalActive(true);
+            });
+        }
     }
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <div style={{ width: '23rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
                 <div className='mt-3 pb-2'>
-                    <h2 className='text-center text-shadow-sm'>Создать вакансию</h2>
+                    <h2 className='text-center text-shadow-sm'>Редактировать резюме</h2>
                 </div>
                 <Formik
                     initialValues={{
-                        title: '',
-                        salary_from: '',
-                        salary_to: '',
-                        qualification: '',
-                        description: '',
+                        title: resume?.title || '',
+                        experience: resume?.experience || '',
+                        description: resume?.description || '',
                     }}
                     onSubmit={values => handleSubmit(values)}
                 >
@@ -85,30 +91,14 @@ function AddVacancy() {
                                 validate={validateRequired}
                                 {...inputFields.title}
                             />
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <Field
-                                    className={`form-control mt-3 ${
-                                        errors.salary_from && touched.salary_from ? 'invalid-field' : null
-                                    }`}
-                                    validate={validateRequired}
-                                    {...inputFields.salary_from}
-                                />
-                                <Field
-                                    className={`form-control mt-3 ${
-                                        errors.salary_to && touched.salary_to ? 'invalid-field' : null
-                                    }`}
-                                    validate={validateRequired}
-                                    {...inputFields.salary_to}
-                                />
-                            </div>
                             <Field
                                 as={'textarea'}
                                 className={`form-control mt-3 ${
-                                    errors.qualification && touched.qualification ? 'invalid-field' : null
+                                    errors.experience && touched.experience ? 'invalid-field' : null
                                 }`}
-                                rows='2'
+                                rows='3'
                                 validate={validateRequired}
-                                {...inputFields.qualification}
+                                {...inputFields.experience}
                             />
                             <div className='pb-2'>
                                 <Field
@@ -122,9 +112,7 @@ function AddVacancy() {
                                 />
                             </div>
                             {(errors.title && touched.title) ||
-                            (errors.salary_from && touched.salary_from) ||
-                            (errors.salary_to && touched.salary_to) ||
-                            (errors.qualification && touched.qualification) ||
+                            (errors.experience && touched.experience) ||
                             (errors.description && touched.description) ? (
                                 <div style={{ color: '#f75050', fontSize: '0.9rem' }}>
                                     Все поля должны быть заполнены!
@@ -136,15 +124,12 @@ function AddVacancy() {
                                     type='submit'
                                     style={{ width: '100%' }}
                                     disabled={
-                                        errors.title ||
-                                        errors.salary_from ||
-                                        errors.salary_to ||
-                                        errors.qualification ||
-                                        errors.description ||
-                                        !touched.title
+                                        errors.experience ||
+                                        errors.description || 
+                                        errors.title
                                     }
                                 >
-                                    Создать
+                                    Подтвердить изменения
                                 </button>
                             </div>
                         </Form>
@@ -155,7 +140,7 @@ function AddVacancy() {
                 open={modalActive}
                 onClose={() => {
                     setModalActive(false);
-                    navigate(`/vacancies`);
+                    navigate(`/profile`);
                 }}
                 aria-labelledby='modal-modal-title'
                 aria-describedby='modal-modal-description'
@@ -173,11 +158,11 @@ function AddVacancy() {
                     }}
                 >
                     <Typography id='modal-modal-title' variant='h6' component='h2'>
-                        Вакансия была создана:
+                        Данные были успешны обновлены:
                     </Typography>
                     <hr className='my-1' style={{ color: 'black' }} />
                     <Typography id='modal-modal-description' sx={{ mt: 1 }}>
-                        Ваша <span style={{ fontWeight: 'bold' }}>новая</span> вакансия уже
+                        <span style={{ fontWeight: 'bold' }}>Обновленная</span> информация о вашем резюме уже
                         отображается на сайте!
                     </Typography>
                 </Box>
@@ -188,9 +173,9 @@ function AddVacancy() {
 
 function mapStateToProps(state) {
     return {
-        profile: state.auth.profile,
         isAuthenticated: state.auth.isAuthenticated,
+        profile: state.auth.profile,
     };
 }
 
-export default connect(mapStateToProps, {})(AddVacancy);
+export default connect(mapStateToProps, {})(EditResume);

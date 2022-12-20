@@ -12,6 +12,17 @@ class VacanciesService {
             )
     }
 
+    loadDepartamentVacancies() {
+        return api
+            .get(
+                '/vacancies/dep_vacancies/'
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
     loadVacancyBySlug(data) {
         const slug = data.slug;
 
@@ -44,6 +55,43 @@ class VacanciesService {
         return api
             .patch(
                 `/vacancies/${slug}/respond/`
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
+    updateVacancy(slug, data) {
+        const body = JSON.stringify({ ...data });
+
+        return api
+            .put(
+                `/vacancies/${slug}/`, body
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
+    loadReplies(slug) {
+        return api
+            .get(
+                `/vacancies/${slug}/replies/`
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
+    editVacancy(slug, data) {
+        const body = JSON.stringify({ ...data });
+
+        return api
+            .put(
+                `/vacancies/${slug}/`, body
             ).then(
                 response => {
                     return response.data;

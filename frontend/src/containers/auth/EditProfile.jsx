@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Typography, Box, Modal } from '@mui/material';
 
@@ -8,15 +8,15 @@ import { updateProfile, loadCountries } from '../../actions/auth';
 
 import '../../css/auth.css';
 
-function UpdateProfile(props) {
+function EditProfile(props) {
     const [countires, setCountries] = useState(null);
 
     useEffect(() => {
-        loadCountries().then(c => setCountries(c))
+        loadCountries().then(c => setCountries(c));
     }, []);
 
-    const [errorModalActive, setErrorModalActive] = useState(false);
-    
+    const [modalActive, setModalActive] = useState(false);
+
     const navigate = useNavigate();
 
     if (!props.profile || !countires) {
@@ -64,7 +64,7 @@ function UpdateProfile(props) {
             placeholder: 'Обо мне',
             name: 'about_me',
             required: false,
-        }
+        },
     };
 
     function validate(values) {
@@ -92,9 +92,8 @@ function UpdateProfile(props) {
             const data = response?.data;
 
             if (data) {
-                setErrorModalActive(true);
             } else {
-                navigate('/my_profile', {replace: true});
+                setModalActive(true);
             }
         });
     }
@@ -111,8 +110,9 @@ function UpdateProfile(props) {
                         first_name: props.profile.first_name,
                         username: props.profile.username,
                         email: props.profile.email,
-                        birth_date: '',
-                        country: '',
+                        birth_date: props.profile.birth_date || '',
+                        country: Object.keys(countires).find(key => countires[key] === props.profile.country) || 'AF',
+                        about_me: props.profile.about_me || '',
                     }}
                     onSubmit={values => handleSubmit(values)}
                     validate={validate}
@@ -161,28 +161,43 @@ function UpdateProfile(props) {
                                     {errors.emailAlreadyUsed}
                                 </div>
                             ) : null}
-                            <Field
-                                className='form-control'
-                                {...inputFields.birth_date}
-                            />
-                            <Field 
-                                className='form-control mt-3'
-                                component='select'
-                                {...inputFields.country}
-                            >
-                                {Object.keys(countires).map(
-                                    (code, index) => (<option key={index} value={code}>{countires[code]}</option>)
-                                )}
-                            </Field>
-                            <Field
-                                    className='form-control mt-3 select'
-                                    {...inputFields.about_me}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                                <Field
+                                    className='form-control'
+                                    {...inputFields.birth_date}
+                                    validate={validateRequired}
                                 />
+                                <Field
+                                    className='form-control'
+                                    component='select'
+                                    {...inputFields.country}
+                                    validate={validateRequired}
+                                    style={{color: '#e8e9f3', backgroundColor: '#61708f'}}
+                                >
+                                    {Object.keys(countires).map((code, index) => (
+                                        <option key={index} value={code}>
+                                            {countires[code]}
+                                        </option>
+                                    ))}
+                                </Field>
+                            </div>
+                            <div className='mt-3 pb-2'>
+                                <Field
+                                    as={'textarea'}
+                                    rows='5'
+                                    className='form-control'
+                                    {...inputFields.about_me}
+                                    validate={validateRequired}
+                                />
+                            </div>
                             <div>
                                 {(errors.last_name && touched.last_name) ||
                                 (errors.first_name && touched.first_name) ||
                                 (errors.username && touched.username) ||
-                                (errors.email && touched.email) ? (
+                                (errors.email && touched.email) ||
+                                (errors.birth_date && touched.birth_date) ||
+                                (errors.country && touched.country) ||
+                                (errors.about_me && touched.about_me) ? (
                                     <div style={{ color: '#f75050', fontSize: '0.9rem' }}>
                                         Все поля должны быть заполнены!
                                     </div>
@@ -198,7 +213,10 @@ function UpdateProfile(props) {
                                         errors.last_name ||
                                         errors.username ||
                                         errors.email ||
-                                        errors.emailInvalid
+                                        errors.emailInvalid ||
+                                        errors.about_me ||
+                                        errors.birth_date ||
+                                        errors.country
                                     }
                                 >
                                     Подтвердить изменения
@@ -208,6 +226,36 @@ function UpdateProfile(props) {
                     )}
                 </Formik>
             </div>
+            <Modal
+                open={modalActive}
+                onClose={() => {
+                    setModalActive(false);
+                    navigate(`/profile`);
+                }}
+                aria-labelledby='modal-modal-title'
+                aria-describedby='modal-modal-description'
+            >
+                <Box
+                    style={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '26rem',
+                        backgroundColor: '#2c892c',
+                        padding: '0.5rem',
+                        borderRadius: '0.4rem',
+                    }}
+                >
+                    <Typography id='modal-modal-title' variant='h6' component='h2'>
+                        Данные были успешны обновлены:
+                    </Typography>
+                    <hr className='my-1' style={{ color: 'black' }} />
+                    <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                    <span style={{ fontWeight: 'bold' }}>Обновленная</span> информация о вашем профиле уже отображается на сайте!
+                    </Typography>
+                </Box>
+            </Modal>
         </div>
     );
 }
@@ -219,4 +267,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { updateProfile })(UpdateProfile);
+export default connect(mapStateToProps, { updateProfile })(EditProfile);

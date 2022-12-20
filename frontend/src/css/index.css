@@ -23,6 +23,7 @@ header {
     display: flex;
     justify-content: center;
     flex-direction: row;
+    color: white;
     background-color: #394053;
 }
 
@@ -50,10 +51,16 @@ header {
     height: 1.5rem;
 }
 
-.nav-link {
-    color: white;
-}
-
 .nav-link-active span {
     color: #4d5971;
+}
+
+.nav-link-vertical {
+    text-orientation: mixed;
+    writing-mode: vertical-rl;
+    width: 2.5rem;
+    border-style: solid solid solid none;
+    border-radius: 0rem 0.5rem 0.5rem 0rem;
+    border-width: 0.1rem;
+    padding: 0.5rem;
 }

@@ -52,3 +52,21 @@ export const createNewResume = data => {
         }
     )
 };
+
+export const updateResume = (slug, data) => {
+    return ResumesService.updateResume(slug, data).then(
+        data => {
+            return Promise.resolve();
+        },
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
+
+            console.log(error.response);
+
+            return Promise.reject();
+        }
+    )
+};

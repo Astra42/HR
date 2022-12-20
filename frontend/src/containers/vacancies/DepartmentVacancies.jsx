@@ -2,24 +2,20 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
-import { loadAvailableVacancies } from '../../actions/vacancies';
+import { loadDepartamentVacancies } from '../../actions/vacancies';
 
 import '../../css/vacancies.css';
 
 import ShortVacancy from '../../components/vacancies/ShortVacancy';
 import VacanciesNavBar from '../../components/vacancies/VacanciesNavBar';
 
-function Vacancies(props) {
+function DepartmentVacancies(props) {
     useEffect(() => {
-        props.loadAvailableVacancies();
+        props.loadDepartamentVacancies();
     }, []);
 
     if (!props.isAuthenticated) {
         return <Navigate to='/login' replace />;
-    }
-
-    if (!props.profile) {
-        return <></>;
     }
 
     return (
@@ -43,7 +39,7 @@ function Vacancies(props) {
                     />
                 ))}
             </div>
-            {props.profile.is_head ? (<VacanciesNavBar />) : null}
+            <VacanciesNavBar />
         </div>
     );
 }
@@ -51,9 +47,9 @@ function Vacancies(props) {
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.auth.isAuthenticated,
-        vacancies: state.vacancies.vacancies,
+        vacancies: state.vacancies.departmentVacancies,
         profile: state.auth.profile,
     };
 }
 
-export default connect(mapStateToProps, { loadAvailableVacancies })(Vacancies);
+export default connect(mapStateToProps, { loadDepartamentVacancies })(DepartmentVacancies);

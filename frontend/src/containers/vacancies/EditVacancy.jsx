@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Typography, Box, Modal } from '@mui/material';
 
-import { createNewVacancy } from '../../actions/vacancies';
+import { loadVacancyBySlug, editVacancy } from '../../actions/vacancies';
 
-function AddVacancy() {
+function EditVacancy() {
     const navigate = useNavigate();
 
+    const { slug } = useParams();
+
     const [modalActive, setModalActive] = useState(false);
+    const [vacancy, setVacancy] = useState(null);
+
+    useEffect(() => {
+        loadVacancyBySlug({ slug: slug }).then(v => setVacancy(v));
+    }, []);
+
+    if (!vacancy) {
+        return <></>;
+    }
 
     const inputFields = {
         title: {
@@ -55,7 +66,7 @@ function AddVacancy() {
     }
 
     function handleSubmit(values) {
-        createNewVacancy(values).then(response => {
+        editVacancy(slug, values).then(response => {
             setModalActive(true);
         });
     }
@@ -64,15 +75,15 @@ function AddVacancy() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <div style={{ width: '23rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
                 <div className='mt-3 pb-2'>
-                    <h2 className='text-center text-shadow-sm'>Создать вакансию</h2>
+                    <h2 className='text-center text-shadow-sm'>Редактировать вакансию</h2>
                 </div>
                 <Formik
                     initialValues={{
-                        title: '',
-                        salary_from: '',
-                        salary_to: '',
-                        qualification: '',
-                        description: '',
+                        title: vacancy.title,
+                        salary_from: vacancy.salary_from,
+                        salary_to: vacancy.salary_to,
+                        qualification: vacancy.qualification,
+                        description: vacancy.description,
                     }}
                     onSubmit={values => handleSubmit(values)}
                 >
@@ -140,11 +151,10 @@ function AddVacancy() {
                                         errors.salary_from ||
                                         errors.salary_to ||
                                         errors.qualification ||
-                                        errors.description ||
-                                        !touched.title
+                                        errors.description
                                     }
                                 >
-                                    Создать
+                                    Редактировать
                                 </button>
                             </div>
                         </Form>
@@ -155,7 +165,7 @@ function AddVacancy() {
                 open={modalActive}
                 onClose={() => {
                     setModalActive(false);
-                    navigate(`/vacancies`);
+                    navigate(`/vacancies/${slug}`);
                 }}
                 aria-labelledby='modal-modal-title'
                 aria-describedby='modal-modal-description'
@@ -173,12 +183,11 @@ function AddVacancy() {
                     }}
                 >
                     <Typography id='modal-modal-title' variant='h6' component='h2'>
-                        Вакансия была создана:
+                        Данные были успешны обновлены:
                     </Typography>
                     <hr className='my-1' style={{ color: 'black' }} />
                     <Typography id='modal-modal-description' sx={{ mt: 1 }}>
-                        Ваша <span style={{ fontWeight: 'bold' }}>новая</span> вакансия уже
-                        отображается на сайте!
+                    <span style={{ fontWeight: 'bold' }}>Обновленная</span> информация о вашей вакансии уже отображается на сайте!
                     </Typography>
                 </Box>
             </Modal>
@@ -193,4 +202,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {})(AddVacancy);
+export default connect(mapStateToProps, {})(EditVacancy);

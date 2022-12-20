@@ -23,6 +23,7 @@ export function authReducer(state = initialState, action) {
         case types.auth.LOGOUT:
         case types.auth.SIGNUP_FAIL:
         case types.auth.LOGIN_FAIL:
+        case types.auth.USER_LOADED_FAIL:
             return {
                 ...state,
                 isAuthenticated: false,
@@ -33,11 +34,6 @@ export function authReducer(state = initialState, action) {
             return {
                 ...state,
                 isAuthenticated: false,
-            };
-        case types.auth.USER_LOADED_FAIL:
-            return {
-                ...state,
-                profile: null,
             };
         case types.auth.REFRESH_TOKEN_SUCCESS:
             return {

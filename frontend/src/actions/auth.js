@@ -1,6 +1,6 @@
 import { types } from './types';
 import AuthService from '../services/auth';
-import TokenService from '../services/token'
+import TokenService from '../services/token';
 
 export const login = data => dispatch => {
     return AuthService.login(data).then(
@@ -39,8 +39,8 @@ export const loadUser = () => dispatch => {
         return AuthService.loadUser().then(
             data => {
                 dispatch({ type: types.auth.USER_LOADED_SUCCES, payload: data });
-    
-                return Promise.resolve();   
+
+                return Promise.resolve();
             },
             error => {
                 // const message =
@@ -48,34 +48,32 @@ export const loadUser = () => dispatch => {
                 //     error.message ||
                 //     error.toString();
 
-                console.log('user failed');
-    
                 dispatch({ type: types.auth.USER_LOADED_FAIL });
-    
+
                 return Promise.reject();
             }
         );
     }
 };
 
-export const checkAuthenticated = () =>  dispatch => {
+export const checkAuthenticated = () => dispatch => {
     if (TokenService.getLocalAccessToken()) {
         return AuthService.checkAuthenticated().then(
             data => {
                 dispatch({ type: types.auth.AUTHENTICATED_SUCCES });
-    
+
                 dispatch(loadUser());
-    
-                return Promise.resolve();   
+
+                return Promise.resolve();
             },
             error => {
                 // const message =
                 //     (error.response && error.response.data && error.response.data.message) ||
                 //     error.message ||
                 //     error.toString();
-    
+
                 dispatch({ type: types.auth.AUTHENTICATED_FAIL });
-    
+
                 return Promise.reject();
             }
         );
@@ -87,15 +85,15 @@ export const logout = () => dispatch => {
         return AuthService.logout().then(
             data => {
                 dispatch({ type: types.auth.LOGOUT });
-    
-                return Promise.resolve();   
+
+                return Promise.resolve();
             },
             error => {
                 // const message =
                 //     (error.response && error.response.data && error.response.data.message) ||
                 //     error.message ||
                 //     error.toString();
-    
+
                 return Promise.reject();
             }
         );
@@ -105,27 +103,45 @@ export const logout = () => dispatch => {
 export const updateProfile = (data, username) => dispatch => {
     if (TokenService.getLocalAccessToken()) {
         return AuthService.updateProfile(data, username).then(
-            data => {    
+            data => {
                 dispatch(loadUser());
-    
-                return Promise.resolve();   
+
+                return Promise.resolve();
             },
             error => {
                 // const message =
                 //     (error.response && error.response.data && error.response.data.message) ||
                 //     error.message ||
                 //     error.toString();
-    
+
                 return error.response;
             }
         );
     }
-}
+};
 
 export const loadCountries = () => {
     if (TokenService.getLocalAccessToken()) {
         return AuthService.loadCountries().then(
-            data => {        
+            data => {
+                return data;
+            },
+            error => {
+                // const message =
+                //     (error.response && error.response.data && error.response.data.message) ||
+                //     error.message ||
+                //     error.toString();
+
+                return error.response;
+            }
+        );
+    }
+};
+
+export const loadResume = () => {
+    if (TokenService.getLocalAccessToken()) {
+        return AuthService.loadResume().then(
+            data => {
                 return data;
             },
             error => {
@@ -134,9 +150,26 @@ export const loadCountries = () => {
                 //     error.message ||
                 //     error.toString();
                 console.log(error.response);
-    
+
                 return error.response;
             }
         );
     }
-}
+};
+
+export const resetPassword = data => {
+    return AuthService.resetPassword(data).then(
+        data => {
+            console.log(data);
+            return data;
+        },
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
+
+            return error.response;
+        }
+    );
+};

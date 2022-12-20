@@ -37,6 +37,21 @@ class ResumesService {
                 }
             )
     }
+
+    updateResume(slug, data) {
+        const body = JSON.stringify({ ...data });
+
+        return api
+            .patch(
+                `/resumes/${slug}/`, body
+            ).then(
+                response => {
+                    console.log(response.data);
+                        
+                    return response.data;
+                }
+            )
+    }
 }
 
 export default new ResumesService();

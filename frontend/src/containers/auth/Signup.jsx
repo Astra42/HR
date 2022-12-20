@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, useLocation, useNavigate, Navigate } from 'react-router-dom';
+import { useLocation, useNavigate, Navigate, NavLink } from 'react-router-dom';
 import { Formik, Field, Form } from 'formik';
 import { Typography, Box, Modal } from '@mui/material';
 
@@ -248,9 +248,9 @@ function Signup(props) {
                             <div className='col-12 text-center mt-3'>
                                 <span className='me-2'>
                                     Уже есть аккаунт?{' '}
-                                    <Link className='link fw-600' to='/login'>
+                                    <NavLink className='link fw-600' to='/login'>
                                         Авторизуйтесь!
-                                    </Link>
+                                    </NavLink>
                                 </span>
                             </div>
                         </Form>

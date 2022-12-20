@@ -4,13 +4,13 @@ import { connect } from 'react-redux';
 
 import { loadResumeBySlug } from '../../actions/resumes';
 
-function Resume(props) {
-    const { slug } = useParams();
+function Reply(props) {
+    const { rslug } = useParams();
 
     const [resume, setResume] = useState(null);
 
     useEffect(() => {
-        loadResumeBySlug({slug: slug})
+        loadResumeBySlug({slug: rslug})
             .then(r => setResume(r))
     }, []);
 
@@ -50,4 +50,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {  })(Resume);
+export default connect(mapStateToProps, {  })(Reply);

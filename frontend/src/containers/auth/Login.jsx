@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { useNavigate, useLocation, Navigate, NavLink } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Typography, Box, Modal } from '@mui/material';
 
@@ -82,9 +82,9 @@ function Login(props) {
                                 </div>
                             ))}
                             <div className='col-12 mt-2'>
-                                <Link href='' className='link ms-1 message'>
+                                <NavLink to='/reset-password' className='link ms-1 message'>
                                     Забыли пароль?{' '}
-                                </Link>
+                                </NavLink>
                             </div>
                             {(errors.password && touched.password) || (errors.username && touched.username) ? (
                                 <div className='mt-2' style={{ color: '#f75050', fontSize: '0.9rem' }}>
@@ -104,9 +104,9 @@ function Login(props) {
                             <div className='col-12 mt-3 text-center'>
                                 <span className='me-2'>
                                     Все еще нет аккаунта?{' '}
-                                    <Link className='link fw-600' to='/signup'>
+                                    <NavLink className='link fw-600' to='/signup'>
                                         Создайте!
-                                    </Link>
+                                    </NavLink>
                                 </span>
                             </div>
                         </Form>

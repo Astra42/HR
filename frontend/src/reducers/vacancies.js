@@ -2,6 +2,7 @@ import { types } from '../actions/types';
 
 const initialState = {
     vacancies: [],
+    departmentVacancies: [],
 };
 
 export function vacanciesReducer(state = initialState, action) {
@@ -17,6 +18,16 @@ export function vacanciesReducer(state = initialState, action) {
             return {
                 ...state,
                 vacancies: [],
+            };
+        case types.vacancies.LOAD_AVAILABLE_DEPARTMENT_VACANCIES_SUCCES:
+            return {
+                ...state,
+                departmentVacancies: payload.results,
+            };
+        case types.vacancies.LOAD_AVAILABLE_DEPARTMENT_VACANCIES_FAIL:
+            return {
+                ...state,
+                departmentVacancies: [],
             };
         default:
             return state;

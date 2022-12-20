@@ -1,26 +1,35 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
-import { loadAvailableResumes } from '../../actions/resumes';
+import { loadReplies } from '../../actions/vacancies';
 
 import '../../css/vacancies.css';
 
 import ShortResume from '../../components/resumes/ShortResume';
 
-function Resumes(props) {
+function Replies(props) {
+    const [replies, setReplies] = useState();
+
+    const { slug } = useParams();
+
     useEffect(() => {
-        props.loadAvailableResumes();
+        loadReplies(slug).then(r => setReplies(r))
     }, []);
+
+    if (!replies) {
+        return <></>;
+    }
     
     return (
         <div style={{ display: 'flex', padding: '1rem', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
             <div className='vacancies'>
-                {props.resumes.map((resume, index) => (
+                {replies.map((resume, index) => (
                     <ShortResume
                         key={index}
                         title={resume.title}
                         description={resume.experience}
-                        to={`/resumes/${resume.slug}`}
+                        to={`/vacancies/${slug}/replies/${resume.slug}`}
                     />
                 ))}
             </div>
@@ -35,4 +44,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { loadAvailableResumes })(Resumes);
+export default connect(mapStateToProps, { })(Replies);
