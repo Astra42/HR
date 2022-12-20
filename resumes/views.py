@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import Http404
-from config.permissions import ResumePermission
+from config.permissions import ResumePermission, ResumeDetailPermission
 from .serializers import *
 
 
@@ -26,7 +26,7 @@ class ResumeListAPIView(ListCreateAPIView):
 class ResumeDetailAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ResumeSerializer
     queryset = Resume.objects.filter(is_published=True)
-    permission_classes = (ResumePermission,)
+    permission_classes = (ResumeDetailPermission,)
     lookup_field = 'slug'
 
     def perform_create(self, serializer):

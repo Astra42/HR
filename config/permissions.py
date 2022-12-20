@@ -60,12 +60,14 @@ class ResumePermission(permissions.BasePermission):
 
         return False
 
+
+class ResumeDetailPermission(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         user = request.user
         if user.is_staff or user.is_superuser:
             return True
 
-        if user.id == obj.creator_id:
+        if user.id == obj.creator_id_id:
             return True
 
         if user.is_head and request.method in SAFE_METHODS:

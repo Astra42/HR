@@ -153,27 +153,26 @@ class RequestPasswordResetEmail(GenericAPIView):
             {'success': "This email isn't registered"},
             status=status.HTTP_200_OK)
 
-#
-# class PasswordTokenCheckAPI(GenericAPIView):
-#     serializer_class = SetNewPasswordSerializer
-#
-#     @swagger_auto_schema(operation_description='Token and uid verification')
-#     def get(self, request, uidb64, token):
-#         try:
-#             id = smart_str(urlsafe_base64_decode(uidb64))
-#             user = User.objects.get(id=id)
-#
-#             if not PasswordResetTokenGenerator().check_token(user, token):
-#                 return Response({'error': 'Token not valid'})
-#
-#             return Response({'success': True, 'message': 'Valid',
-#                              'uidb64': uidb64, 'token': token})
-#
-#         except DjangoUnicodeDecodeError as identifier:
-#             if not PasswordResetTokenGenerator().check_token(user):
-#                 return Response(
-#                     {'error': 'Token is not valid, please request a new one'},
-#                     status=status.HTTP_400_BAD_REQUEST)
+
+class PasswordTokenCheckAPI(GenericAPIView):
+    serializer_class = SetNewPasswordSerializer
+
+    @swagger_auto_schema(operation_description='Token and uid verification')
+    def get(self, request, uidb64, token):
+        try:
+            id = smart_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(id=id)
+
+            if not PasswordResetTokenGenerator().check_token(user, token):
+                return Response({'error': 'Token not valid'})
+
+            return Response({'success': True, 'message': 'Valid',
+                             'uidb64': uidb64, 'token': token})
+
+        except DjangoUnicodeDecodeError as identifier:
+            return Response(
+                {'error': 'Token is not valid, please request a new one'},
+                status=status.HTTP_400_BAD_REQUEST)
 
 
 class SetNewPasswordAPIView(GenericAPIView):
