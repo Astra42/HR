@@ -11,6 +11,7 @@ from generators.sequens import *
 from user.models.role import Role
 from user.models.tags import Tag
 from user.models.departments import Department
+from ckeditor.fields import RichTextField
 
 
 class UserManager(BaseUserManager):
@@ -58,7 +59,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     photo = models.ImageField(upload_to="photo/%Y/%m/%d/", blank=True)
     birth_date = models.DateField(blank=True, null=True)
     country = CountryField(blank=True, blank_label='(Select country)')
-    about_me = models.TextField(blank=True)
+    about_me = RichTextField(blank=True)
 
     roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)

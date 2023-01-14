@@ -1,11 +1,11 @@
 from django.db import models
 import transliterate as tr
-
+from ckeditor.fields import RichTextField
 
 class Department(models.Model):
     title = models.CharField(max_length=50, unique=True, verbose_name="Department")
     head = models.OneToOneField('user.User', blank=True, null=True, on_delete=models.SET_NULL, related_name='head')
-    description = models.TextField(verbose_name="Description", blank=True)
+    description = RichTextField(verbose_name="Description", blank=True)
     slug = models.SlugField(max_length=55, unique=True, verbose_name="URL", blank=True)
 
     def save(

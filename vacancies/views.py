@@ -8,11 +8,17 @@ from rest_framework.views import APIView
 from config.permissions import *
 from .serializers import *
 from .utils import *
+from django_filters import rest_framework as rest_filters, NumberFilter, CharFilter
+from rest_framework import filters
 
 
 class VacancyListAPIView(ListCreateAPIView):
     serializer_class = VacancySerializer
     permission_classes = (IsNotEmployee,)
+    filter_backends = (rest_filters.DjangoFilterBackend, filters.SearchFilter)
+    search_fields = ['title', 'creator_id__first_name',
+                     'creator_id__last_name', 'qualification',
+                     'salary_from', 'salary_to']
 
     def perform_create(self, serializer):
         return serializer.save(

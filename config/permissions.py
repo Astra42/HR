@@ -58,6 +58,9 @@ class ResumePermission(permissions.BasePermission):
         if user.is_head and request.method in SAFE_METHODS:
             return True
 
+        if user.is_staff:
+            return True
+
         return False
 
 

@@ -9,12 +9,16 @@ from rest_framework.views import APIView
 from django.http import Http404
 from config.permissions import ResumePermission, ResumeDetailPermission
 from .serializers import *
+from django_filters import rest_framework as rest_filters, NumberFilter, CharFilter
+from rest_framework import filters
 
 
 class ResumeListAPIView(ListCreateAPIView):
     serializer_class = ResumeSerializer
     queryset = Resume.objects.filter(is_published=True)
     permission_classes = (ResumePermission,)
+    filter_backends = (rest_filters.DjangoFilterBackend, filters.SearchFilter)
+    search_fields = ['title', 'creator_id__first_name', 'creator_id__last_name']
 
     def perform_create(self, serializer):
         return serializer.save(creator_id=self.request.user)
