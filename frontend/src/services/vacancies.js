@@ -98,6 +98,28 @@ class VacanciesService {
                 }
             )
     }
+
+    deleteVacancy(slug) {
+        return api
+            .delete(
+                `/vacancies/${slug}/`
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
+
+    searchVacancies(keywords) {
+        return api
+            .get(
+                `/vacancies/?search=${keywords}`
+            ).then(
+                response => {
+                    return response.data;
+                }
+            )
+    }
 }
 
 export default new VacanciesService();

@@ -1,0 +1,170 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+*::before, * ::after {
+  box-sizing: border-box;
+}
+
+#validation {
+  height: 0;
+  overflow: hidden;
+  transition: all 0.5s;
+}
+
+body {
+  background: #2E3544;
+  background-color: #2E3544;
+  opacity: 1;
+  background-image: radial-gradient(#576480 1.55px, transparent 1.55px), radial-gradient(#576480 1.55px, #2E3544 1.55px);
+  background-size: 62px 62px;
+  background-position: 0 0, 31px 31px;
+}
+
+div {
+  color: #faf9f8;
+}
+
+input[type] {
+  color: #faf9f8;
+  background-color: #61708f;
+}
+input[type]::-webkit-input-placeholder {
+  color: #e8e9f3;
+}
+input[type]::-webkit-input-placeholder:focus::-webkit-input-placeholder {
+  color: #e8e9f3;
+}
+input[type]:-moz-placeholder {
+  color: #e8e9f3;
+  opacity: 1;
+}
+input[type]:-moz-placeholder:focus:-moz-placeholder {
+  color: #e8e9f3;
+  opacity: 1;
+}
+input[type]::-moz-placeholder {
+  color: #e8e9f3;
+  opacity: 1;
+}
+input[type]::-moz-placeholder:focus::-moz-placeholder {
+  color: #e8e9f3;
+  opacity: 1;
+}
+input[type]:-ms-input-placeholder {
+  color: #e8e9f3;
+}
+input[type]:-ms-input-placeholder:focus:-ms-input-placeholder {
+  color: #e8e9f3;
+}
+input[type]:focus {
+  color: #faf9f8;
+  background-color: #61708f;
+  border-color: #faf9f8;
+  box-shadow: 0 0 0 0.1rem #e8e9f3;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.sign-in {
+  letter-spacing: 1px;
+}
+
+.full-h {
+  height: 100vh;
+}
+
+.card {
+  background: #4d5871;
+  box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 2px;
+}
+
+.message {
+  font-size: 0.9em;
+  line-height: 1.2em;
+}
+
+.link {
+  color: #faf9f8;
+  text-decoration: underline;
+}
+.link:hover {
+  color: #FF9505;
+  text-decoration: none;
+}
+
+#togglePassword img {
+  opacity: 0.6;
+  font-size: 20px;
+}
+
+.pass-form {
+  padding-right: 35px;
+}
+
+.valid-icon {
+  font-size: 18px;
+}
+
+.fc-danger {
+  box-shadow: 0 0 0 0.1rem #f75050;
+}
+.fc-danger:focus {
+  box-shadow: 0 0 0 0.25rem #e8e9f3;
+  border-color: #e8e9f3;
+}
+
+.valid-block .alert-text, .valid-block .valid-icon {
+  color: #50f750;
+  filter: drop-shadow(0 0 1px rgba(80, 247, 80, 0.5));
+}
+
+.invalid-block .alert-text, .invalid-block .valid-icon {
+  color: #f75050;
+  filter: drop-shadow(0 0 1px rgb(247, 80, 80));
+}
+
+.btn-success {
+  color: #faf9f8;
+  background: #38AC38;
+}
+.btn-success:hover {
+  background: #2c892c;
+}
+
+.block-clr {
+  background-color: #4d5871;
+}
+
+.avatar {
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  background-color: #2E3544;
+}
+.avatar img {
+  width: 100%;
+}
+.border-clr {
+  border-right: 2px solid #2E3544;
+}
+
+.add-phone {
+  border-color: #e8e9f3;
+  box-shadow: 0 0 0 0.01rem;
+}
+
+.btn-profile {
+  display: inline-block;
+}
+
+.text-purple {
+  color: #c29ffa;
+}
+
+.btn-profile {
+  width: 180px;
+}

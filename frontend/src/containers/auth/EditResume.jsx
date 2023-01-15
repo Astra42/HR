@@ -3,6 +3,10 @@ import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { Typography, Box, Modal } from '@mui/material';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import Editor from 'ckeditor5-custom-build/build/ckeditor';
+
+import '../../css/editor.css';
 
 import { createNewResume, updateResume } from '../../actions/resumes';
 import { loadResume } from '../../actions/auth';
@@ -70,7 +74,7 @@ function EditResume(props) {
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <div style={{ width: '23rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
+            <div style={{ width: '30rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
                 <div className='mt-3 pb-2'>
                     <h2 className='text-center text-shadow-sm'>Редактировать резюме</h2>
                 </div>

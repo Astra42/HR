@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -6,8 +6,13 @@ import resumes from '../../svg/resumes.svg';
 import vacancies from '../../svg/vacancies.svg';
 
 import profile from '../../svg/profile.svg';
+import { searchVacancies } from '../../actions/vacancies';
 
 function Navbar(props) {
+    const [search, setSearch] = useState('');
+
+    const searchRef = React.createRef();
+    
     return (
         <nav style={{ marginLeft: '5%', display: 'flex', flexDirection: 'row', width: '100%' }}>
             <div
@@ -50,6 +55,22 @@ function Navbar(props) {
                     </NavLink>
                 )}
             </div>
+            <div style={{ marginLeft: '5%', display: 'flex', alignItems: 'center' }}>
+                <input
+                    type='text'
+                    ref={searchRef}
+                    className='form-control'
+                    style={{ height: '2.1rem', width: '25rem' }}
+                    placeholder='Поиск'
+                    value={search}
+                    onChange={() => setSearch(searchRef.current.value)}
+                />
+            </div>
+            <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center' }}>
+                <button className='btn btn-primary' type='submit' onClick={() => props.searchVacancies(search)}>
+                    Найти
+                </button>
+            </div>
             <div style={{ flex: '1' }} />
             <div style={{ marginRight: '10%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <NavLink to='/profile'>
@@ -76,4 +97,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, null)(Navbar);
+export default connect(mapStateToProps, {searchVacancies})(Navbar);

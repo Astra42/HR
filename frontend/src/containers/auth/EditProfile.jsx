@@ -102,7 +102,7 @@ function EditProfile(props) {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
             <div style={{ width: '23rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
                 <div className='mt-3 pb-2'>
-                    <h2 className='text-center text-shadow-sm'>Профиль апдате</h2>
+                    <h2 className='text-center text-shadow-sm'>Редактирование профиля</h2>
                 </div>
                 <Formik
                     initialValues={{

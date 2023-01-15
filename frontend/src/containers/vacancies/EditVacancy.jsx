@@ -154,7 +154,7 @@ function EditVacancy() {
                                         errors.description
                                     }
                                 >
-                                    Редактировать
+                                    Сохранить изменения
                                 </button>
                             </div>
                         </Form>

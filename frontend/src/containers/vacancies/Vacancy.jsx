@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useParams, useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Typography, Box, Modal } from '@mui/material';
 
-import { replyOnVacancy, loadVacancyBySlug } from '../../actions/vacancies';
+import { replyOnVacancy, loadVacancyBySlug, deleteVacancy } from '../../actions/vacancies';
 
 function Vacancy(props) {
     const { slug } = useParams();
 
     const [modalActive, setModalActive] = useState(false);
     const [vacancy, setVacancy] = useState(null);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         loadVacancyBySlug({ slug: slug }).then(v => setVacancy(v));
@@ -20,11 +22,14 @@ function Vacancy(props) {
     }
 
     function handleClick() {
-        replyOnVacancy({slug: slug}).then(response => {
+        replyOnVacancy({ slug: slug }).then(response => {
             console.log(modalActive);
             setModalActive(true);
         });
     }
+
+    console.log(vacancy);
+    console.log(props.profile);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', padding: '1rem' }}>
@@ -40,9 +45,19 @@ function Vacancy(props) {
                                 <NavLink to={`/vacancies/${slug}/replies`} className='btn btn-warning me-2'>
                                     Ответы
                                 </NavLink>
-                                <NavLink to={`/vacancies/${slug}/edit`} className='btn btn-info'>
+                                <NavLink to={`/vacancies/${slug}/edit`} className='btn btn-info me-2'>
                                     Изменить
                                 </NavLink>
+                                <button
+                                    className='btn btn-danger'
+                                    type='submit'
+                                    onClick={() => {
+                                        deleteVacancy(slug);
+                                        navigate('/vacancies');
+                                    }}
+                                >
+                                    Удалить
+                                </button>
                             </div>
                         ) : (
                             <button className='btn btn-primary' type='submit' onClick={handleClick}>
@@ -72,32 +87,33 @@ function Vacancy(props) {
                     </div>
                 </div>
                 <Modal
-                open={modalActive}
-                onClose={() => setModalActive(false)}
-                aria-labelledby='modal-modal-title'
-                aria-describedby='modal-modal-description'
-            >
-                <Box
-                    style={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: '26rem',
-                        backgroundColor: '#2c892c',
-                        padding: '0.5rem',
-                        borderRadius: '0.4rem',
-                    }}
+                    open={modalActive}
+                    onClose={() => setModalActive(false)}
+                    aria-labelledby='modal-modal-title'
+                    aria-describedby='modal-modal-description'
                 >
-                    <Typography id='modal-modal-title' variant='h6' component='h2'>
-                        Вы откликнулись на вакансию:
-                    </Typography>
-                    <hr className='my-1' style={{ color: 'black' }} />
-                    <Typography id='modal-modal-description' sx={{ mt: 1 }}>
-                        Теперь работодатель сможет просмотреть <span style={{ fontWeight: 'bold' }}>ваше</span> резюме!
-                    </Typography>
-                </Box>
-            </Modal>
+                    <Box
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: '26rem',
+                            backgroundColor: '#2c892c',
+                            padding: '0.5rem',
+                            borderRadius: '0.4rem',
+                        }}
+                    >
+                        <Typography id='modal-modal-title' variant='h6' component='h2'>
+                            Вы откликнулись на вакансию:
+                        </Typography>
+                        <hr className='my-1' style={{ color: 'black' }} />
+                        <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                            Теперь работодатель сможет просмотреть <span style={{ fontWeight: 'bold' }}>ваше</span>{' '}
+                            резюме!
+                        </Typography>
+                    </Box>
+                </Modal>
             </div>
         </div>
     );
@@ -110,4 +126,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, {  })(Vacancy);
+export default connect(mapStateToProps, {})(Vacancy);

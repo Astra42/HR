@@ -19,6 +19,16 @@ export function vacanciesReducer(state = initialState, action) {
                 ...state,
                 vacancies: [],
             };
+        case types.vacancies.SEARCH_AVAILABLE_VACANCIES_SUCCES:
+            return {
+                ...state,
+                vacancies: payload.results,
+            };
+        case types.vacancies.SEARCH_AVAILABLE_VACANCIES_FAIL:
+            return {
+                ...state,
+                vacancies: [],
+            };
         case types.vacancies.LOAD_AVAILABLE_DEPARTMENT_VACANCIES_SUCCES:
             return {
                 ...state,

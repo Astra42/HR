@@ -14,15 +14,31 @@ function Replies(props) {
     const { slug } = useParams();
 
     useEffect(() => {
-        loadReplies(slug).then(r => setReplies(r))
+        loadReplies(slug).then(r => setReplies(r));
     }, []);
 
-    if (!replies) {
-        return <></>;
+    if (!replies || replies.length === 0) {
+        return (
+            <div
+                style={{
+                    display: 'flex',
+                    padding: '1rem',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    height: '100%',
+                }}
+            >
+                Никто еще не откликнулся на вакансию
+            </div>
+        );
     }
-    
+
+    console.log(replies);
+
     return (
-        <div style={{ display: 'flex', padding: '1rem', flexDirection: 'column', alignItems: 'center', height: '100%' }}>
+        <div
+            style={{ display: 'flex', padding: '1rem', flexDirection: 'column', alignItems: 'center', height: '100%' }}
+        >
             <div className='vacancies'>
                 {replies.map((resume, index) => (
                     <ShortResume
@@ -44,4 +60,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps, { })(Replies);
+export default connect(mapStateToProps, {})(Replies);

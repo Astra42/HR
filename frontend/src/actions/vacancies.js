@@ -1,10 +1,10 @@
 import { types } from './types';
-import VacanciesService from '../services/vacancies'
+import VacanciesService from '../services/vacancies';
 
 export const loadAvailableVacancies = () => dispatch => {
     return VacanciesService.loadAvailableVacancies().then(
         data => {
-            dispatch({type: types.vacancies.LOAD_AVAILABLE_VACANCIES_SUCCES, payload: data});
+            dispatch({ type: types.vacancies.LOAD_AVAILABLE_VACANCIES_SUCCES, payload: data });
 
             return Promise.resolve();
         },
@@ -18,13 +18,13 @@ export const loadAvailableVacancies = () => dispatch => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
 export const loadDepartamentVacancies = () => dispatch => {
     return VacanciesService.loadDepartamentVacancies().then(
         data => {
-            dispatch({type: types.vacancies.LOAD_AVAILABLE_DEPARTMENT_VACANCIES_SUCCES, payload: data});
+            dispatch({ type: types.vacancies.LOAD_AVAILABLE_DEPARTMENT_VACANCIES_SUCCES, payload: data });
 
             return Promise.resolve();
         },
@@ -38,7 +38,7 @@ export const loadDepartamentVacancies = () => dispatch => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
 export const loadVacancyBySlug = data => {
@@ -54,7 +54,7 @@ export const loadVacancyBySlug = data => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
 export const createNewVacancy = data => {
@@ -70,7 +70,7 @@ export const createNewVacancy = data => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
 export const replyOnVacancy = data => {
@@ -86,7 +86,7 @@ export const replyOnVacancy = data => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
 export const updateVacancy = (slug, data) => {
@@ -102,15 +102,15 @@ export const updateVacancy = (slug, data) => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
-export const loadReplies = (slug) => {
+export const loadReplies = slug => {
     return VacanciesService.loadReplies(slug).then(
         data => {
             console.log(data);
 
-            return data.resumes
+            return data.resumes;
         },
         error => {
             // const message =
@@ -120,7 +120,7 @@ export const loadReplies = (slug) => {
 
             return Promise.reject();
         }
-    )
+    );
 };
 
 export const editVacancy = (slug, data) => {
@@ -136,5 +136,36 @@ export const editVacancy = (slug, data) => {
 
             return Promise.reject();
         }
-    )
+    );
+};
+
+export const deleteVacancy = slug => {
+    return VacanciesService.deleteVacancy(slug).then(
+        data => {
+            return Promise.resolve();
+        },
+        error => {
+            // const message =
+            //     (error.response && error.response.data && error.response.data.message) ||
+            //     error.message ||
+            //     error.toString();
+
+            return Promise.reject();
+        }
+    );
+};
+
+export const searchVacancies = keywords => dispatch => {
+    return VacanciesService.searchVacancies(keywords).then(
+        data => {
+            dispatch({ type: types.vacancies.SEARCH_AVAILABLE_VACANCIES_SUCCES, payload: data });
+
+            return Promise.resolve();
+        },
+        error => {
+            dispatch({ type: types.vacancies.SEARCH_AVAILABLE_VACANCIES_FAIL})
+
+            return Promise.reject();
+        }
+    );
 };
