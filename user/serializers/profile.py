@@ -63,6 +63,8 @@ class ProfileSerializer(serializers.Serializer):
     birth_date = serializers.DateField()
     country = CountryField(name_only=True)
     photo = serializers.ImageField()
+    phone_one = PhoneNumberField()
+    phone_two = PhoneNumberField()
     phone_set = PhoneSerializer(many=True, read_only=True)
     departments = DepartmentSerializer(read_only=True)
     head_of_department = DepartmentSerializer(source='department',
@@ -85,12 +87,14 @@ class UpdateUserSerializer(serializers.ModelSerializer):
     photo = serializers.ImageField(required=False)
     country = CountryField(required=False)
     about_me = serializers.CharField(required=False)
+    phone_one = PhoneNumberField(required=False)
+    phone_two = PhoneNumberField(required=False)
 
     class Meta:
         model = User
         fields = [
             'email', 'first_name', 'last_name', 'username', 'birth_date',
-            'photo', 'country', 'about_me',
+            'photo', 'country', 'about_me', 'phone_one', 'phone_two'
         ]
 
     def validate_email(self, value):
@@ -130,6 +134,10 @@ class UpdateUserSerializer(serializers.ModelSerializer):
             instance.photo = validated_data['photo']
         if 'birth_date' in validated_data:
             instance.birth_date = validated_data['birth_date']
+        if 'phone_one' in validated_data:
+            instance.phone_one = validated_data['phone_one']
+        if 'phone_two' in validated_data:
+            instance.phone_two = validated_data['phone_two']
 
         instance.save()
 

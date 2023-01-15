@@ -4,7 +4,7 @@ from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
 from django_countries.fields import CountryField
-
+from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from generators.sequens import *
@@ -60,6 +60,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     birth_date = models.DateField(blank=True, null=True)
     country = CountryField(blank=True, blank_label='(Select country)')
     about_me = RichTextField(blank=True)
+    phone_one = PhoneNumberField(blank=True)
+    phone_two = PhoneNumberField(blank=True)
 
     roles = models.ManyToManyField(Role, blank=True)
     tags = models.ManyToManyField(Tag, blank=True)
