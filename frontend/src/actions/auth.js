@@ -114,6 +114,8 @@ export const updateProfile = (data, username) => dispatch => {
                 //     error.message ||
                 //     error.toString();
 
+                console.log(error.response)
+
                 return error.response;
             }
         );

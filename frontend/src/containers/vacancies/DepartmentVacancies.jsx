@@ -39,7 +39,6 @@ function DepartmentVacancies(props) {
                     />
                 ))}
             </div>
-            <VacanciesNavBar />
         </div>
     );
 }

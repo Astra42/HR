@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Navigate } from 'react-router-dom';
+import { Navigate, NavLink } from 'react-router-dom';
 
 import { loadAvailableVacancies } from '../../actions/vacancies';
 
 import '../../css/vacancies.css';
 
 import ShortVacancy from '../../components/vacancies/ShortVacancy';
-import VacanciesNavBar from '../../components/vacancies/VacanciesNavBar';
+
+import add from '../../svg/add.svg';
 
 function Vacancies(props) {
     useEffect(() => {
@@ -43,7 +44,22 @@ function Vacancies(props) {
                     />
                 ))}
             </div>
-            {props.profile.is_head ? (<VacanciesNavBar />) : null}
+            {props.profile.is_head ? (<div
+                style={{
+                    backgroundColor: '#4d5971',
+                    marginLeft: '2rem',
+                    height: '2.5rem',
+                    width: '2.5rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '50%'
+                }}
+            >
+                <NavLink to='/vacancies/add'>
+                <img src={add} alt='add' style={{ height: '2rem' }} />
+                </NavLink>
+            </div>) : null}
         </div>
     );
 }

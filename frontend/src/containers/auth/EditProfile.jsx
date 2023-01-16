@@ -8,6 +8,8 @@ import { updateProfile, loadCountries } from '../../actions/auth';
 
 import '../../css/auth.css';
 
+import logo from '../../img/logo.png'
+
 function EditProfile(props) {
     const [countires, setCountries] = useState(null);
 
@@ -65,6 +67,18 @@ function EditProfile(props) {
             name: 'about_me',
             required: false,
         },
+        phone_one: {
+            type: 'tel',
+            placeholder: 'Основной',
+            name: 'phone_one',
+            required: false,
+        },
+        phone_two: {
+            type: 'tel',
+            placeholder: 'Запасной',
+            name: 'phone_two',
+            required: false,
+        },
     };
 
     function validate(values) {
@@ -88,6 +102,8 @@ function EditProfile(props) {
     }
 
     function handleSubmit(values) {
+        console.log('cringe');
+
         props.updateProfile(values, props.profile.username).then(response => {
             const data = response?.data;
 
@@ -99,133 +115,189 @@ function EditProfile(props) {
     }
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-            <div style={{ width: '23rem', backgroundColor: '#4d5871', padding: '1.5rem', borderRadius: '0.4rem' }}>
-                <div className='mt-3 pb-2'>
-                    <h2 className='text-center text-shadow-sm'>Редактирование профиля</h2>
-                </div>
-                <Formik
-                    initialValues={{
-                        last_name: props.profile.last_name,
-                        first_name: props.profile.first_name,
-                        username: props.profile.username,
-                        email: props.profile.email,
-                        birth_date: props.profile.birth_date || '',
-                        country: Object.keys(countires).find(key => countires[key] === props.profile.country) || 'AF',
-                        about_me: props.profile.about_me || '',
-                    }}
-                    onSubmit={values => handleSubmit(values)}
-                    validate={validate}
-                >
-                    {({ errors, touched }) => (
-                        <Form>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <Field
-                                    className={`form-control mt-3 ${
-                                        errors.last_name && touched.last_name ? 'invalid-field' : null
-                                    }`}
-                                    validate={validateRequired}
-                                    {...inputFields.last_name}
-                                />
-                                <Field
-                                    className={`form-control mt-3 ${
-                                        errors.first_name && touched.first_name ? 'invalid-field' : null
-                                    }`}
-                                    validate={validateRequired}
-                                    {...inputFields.first_name}
-                                />
-                            </div>
-                            <Field
-                                className={`form-control mt-3 ${
-                                    errors.username && touched.username ? 'invalid-field' : null
-                                }`}
-                                validate={validateRequired}
-                                {...inputFields.username}
-                            />
-                            <Field
-                                className={`form-control mt-3 ${
-                                    (errors.email || errors.emailInvalid || errors.emailAlreadyUsed) && touched.email
-                                        ? 'invalid-field mb-2'
-                                        : 'mb-3'
-                                } ${(errors.emailInvalid || errors.emailAlreadyUsed) && errors.email ? 'mb-3' : null}`}
-                                validate={validateRequired}
-                                {...inputFields.email}
-                            />
-                            {!errors.email && errors.emailInvalid && touched.email ? (
-                                <div className='mt-1' style={{ color: '#f75050', fontSize: '0.9rem' }}>
-                                    {errors.emailInvalid}
-                                </div>
-                            ) : null}
-                            {!errors.email && errors.emailAlreadyUsed && touched.email ? (
-                                <div className='mt-1' style={{ color: '#f75050', fontSize: '0.9rem' }}>
-                                    {errors.emailAlreadyUsed}
-                                </div>
-                            ) : null}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                                <Field
-                                    className='form-control'
-                                    {...inputFields.birth_date}
-                                    validate={validateRequired}
-                                />
-                                <Field
-                                    className='form-control'
-                                    component='select'
-                                    {...inputFields.country}
-                                    validate={validateRequired}
-                                    style={{color: '#e8e9f3', backgroundColor: '#61708f'}}
-                                >
-                                    {Object.keys(countires).map((code, index) => (
-                                        <option key={index} value={code}>
-                                            {countires[code]}
-                                        </option>
-                                    ))}
-                                </Field>
-                            </div>
-                            <div className='mt-3 pb-2'>
-                                <Field
-                                    as={'textarea'}
-                                    rows='5'
-                                    className='form-control'
-                                    {...inputFields.about_me}
-                                    validate={validateRequired}
-                                />
-                            </div>
-                            <div>
-                                {(errors.last_name && touched.last_name) ||
-                                (errors.first_name && touched.first_name) ||
-                                (errors.username && touched.username) ||
-                                (errors.email && touched.email) ||
-                                (errors.birth_date && touched.birth_date) ||
-                                (errors.country && touched.country) ||
-                                (errors.about_me && touched.about_me) ? (
-                                    <div style={{ color: '#f75050', fontSize: '0.9rem' }}>
-                                        Все поля должны быть заполнены!
+        <div className='container rounded mt-5 mb-5 block-clr'>
+            <Formik
+                initialValues={{
+                    last_name: props.profile.last_name,
+                    first_name: props.profile.first_name,
+                    username: props.profile.username,
+                    email: props.profile.email,
+                    birth_date: props.profile.birth_date || '',
+                    country: Object.keys(countires).find(key => countires[key] === props.profile.country) || 'AF',
+                    about_me: props.profile.about_me || '',
+                    phone_one: props.profile.phone_one || '',
+                    phone_two: props.profile.phone_two || '',
+                }}
+                onSubmit={values => handleSubmit(values)}
+                validate={validate}
+            >
+                {({ errors, touched }) => (
+                    <Form>
+                        <div className='row'>
+                            <div className='col-md-4 border-clr'>
+                                <div className='d-flex flex-column align-items-center text-center p-3 py-5'>
+                                    <div className='rounded-circle mt-5 avatar'>
+                                        <img
+                                            width='150px'
+                                            src={logo}
+                                        />
                                     </div>
-                                ) : null}
+                                    <span className='fw-bold fs-5'>
+                                        {props.profile.last_name} {props.profile.first_name}
+                                    </span>
+                                    <span className='fw-light'>{props.profile.email}</span>
+                                </div>
+                                <div className='mt-0 text-center'>
+                                    <button
+                                        className='btn btn-success sign-in fw-600 rounded-5 ps-4 pe-4'
+                                        type='submit'
+                                        disabled={
+                                            errors.first_name ||
+                                            errors.last_name ||
+                                            errors.username ||
+                                            errors.email ||
+                                            errors.emailInvalid ||
+                                            errors.birth_date ||
+                                            errors.country
+                                        }
+                                    >
+                                        Сохранить изменения
+                                    </button>
+                                </div>
                             </div>
-                            <div className='mt-2' style={{ display: 'flex', justifyContent: 'center' }}>
-                                <button
-                                    className='btn btn-success sign-in fw-600 rounded-5'
-                                    type='submit'
-                                    style={{ width: '100%' }}
-                                    disabled={
-                                        errors.first_name ||
-                                        errors.last_name ||
-                                        errors.username ||
-                                        errors.email ||
-                                        errors.emailInvalid ||
-                                        errors.about_me ||
-                                        errors.birth_date ||
-                                        errors.country
-                                    }
-                                >
-                                    Подтвердить изменения
-                                </button>
+                            <div className='col-md-8 ps-5 pe-5'>
+                                <div className='p-3 py-5'>
+                                    <div className='d-flex justify-content-between align-items-center mb-3'>
+                                        <h4 className='text-right'>Редактирование профиля</h4>
+                                    </div>
+                                    <div className='row-cols-4'>
+                                        <div className='col-md-12'>
+                                            <label className='labels mb-1 ps-2'>Имя пользователя</label>
+                                            <Field
+                                                className={`form-control ${
+                                                    errors.username && touched.username ? 'invalid-field' : null
+                                                }`}
+                                                validate={validateRequired}
+                                                {...inputFields.username}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='row mt-3'>
+                                        <div className='col-md-6'>
+                                            <label className='labels mb-1 ps-2'>Фамилия</label>
+                                            <Field
+                                                className={`form-control ${
+                                                    errors.last_name && touched.last_name ? 'invalid-field' : null
+                                                }`}
+                                                validate={validateRequired}
+                                                {...inputFields.last_name}
+                                            />
+                                        </div>
+                                        <div className='col-md-6'>
+                                            <label className='labels mb-1 ps-2'>Имя</label>
+                                            <Field
+                                                className={`form-control ${
+                                                    errors.first_name && touched.first_name ? 'invalid-field' : null
+                                                }`}
+                                                validate={validateRequired}
+                                                {...inputFields.first_name}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='row mt-3 pb-2'>
+                                        <div className='col-md-12'>
+                                            <label className='labels mb-1 ps-2'>E-mail</label>
+                                            <Field
+                                                className={`form-control ${
+                                                    (errors.email || errors.emailInvalid || errors.emailAlreadyUsed) &&
+                                                    touched.email
+                                                        ? 'invalid-field mb-2'
+                                                        : 'mb-2'
+                                                }`}
+                                                validate={validateRequired}
+                                                {...inputFields.email}
+                                            />
+                                            {!errors.email && errors.emailInvalid && touched.email ? (
+                                                <div className='mt-2' style={{ color: '#f75050', fontSize: '0.9rem' }}>
+                                                    {errors.emailInvalid}
+                                                </div>
+                                            ) : null}
+                                            {!errors.email && errors.emailAlreadyUsed && touched.email ? (
+                                                <div className='mt-2' style={{ color: '#f75050', fontSize: '0.9rem' }}>
+                                                    {errors.emailAlreadyUsed}
+                                                </div>
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-md-6'>
+                                            <label className='labels mb-1 ps-2'>Страна</label>
+                                            <Field
+                                                className='form-control'
+                                                component='select'
+                                                {...inputFields.country}
+                                                validate={validateRequired}
+                                                style={{ color: '#e8e9f3', backgroundColor: '#61708f' }}
+                                            >
+                                                {Object.keys(countires).map((code, index) => (
+                                                    <option key={index} value={code}>
+                                                        {countires[code]}
+                                                    </option>
+                                                ))}
+                                            </Field>
+                                        </div>
+                                        <div className='col-md-6 mt-1'>
+                                            <label className='labels mb-1 ps-2'>Дата рождения</label>
+                                            <Field
+                                                className='form-control'
+                                                {...inputFields.birth_date}
+                                                validate={validateRequired}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-md-12 mt-3'>
+                                            <label className='labels mb-1 ps-2'>Телефоны</label>
+                                        </div>
+                                        <div className='col-md-6'>
+                                        <Field
+                                                className={`form-control ${
+                                                    errors.phone_one && touched.phone_one ? 'invalid-field' : null
+                                                }`}
+                                                validate={validateRequired}
+                                                {...inputFields.phone_one}
+                                            />
+                                        </div>
+                                        <div className='col-md-6'>
+                                        <Field
+                                                className={`form-control ${
+                                                    errors.phone_two && touched.phone_two ? 'invalid-field' : null
+                                                }`}
+                                                validate={validateRequired}
+                                                {...inputFields.phone_two}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className='row'>
+                                        <div className='col-md-12 mt-3'>
+                                            <label className='labels mb-1 ps-2'>Обо мне</label>
+                                            <Field
+                                                as={'textarea'}
+                                                rows='6'
+                                                className={`form-control ${
+                                                    errors.about_me && touched.about_me ? 'invalid-field' : null
+                                                }`}
+                                                {...inputFields.about_me}
+                                                validate={validateRequired}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </Form>
-                    )}
-                </Formik>
-            </div>
+                        </div>
+                    </Form>
+                )}
+            </Formik>
             <Modal
                 open={modalActive}
                 onClose={() => {
@@ -252,7 +324,8 @@ function EditProfile(props) {
                     </Typography>
                     <hr className='my-1' style={{ color: 'black' }} />
                     <Typography id='modal-modal-description' sx={{ mt: 1 }}>
-                    <span style={{ fontWeight: 'bold' }}>Обновленная</span> информация о вашем профиле уже отображается на сайте!
+                        <span style={{ fontWeight: 'bold' }}>Обновленная</span> информация о вашем профиле уже
+                        отображается на сайте!
                     </Typography>
                 </Box>
             </Modal>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Typography, Box, Modal } from '@mui/material';
 
 import { loadResumeBySlug } from '../../actions/resumes';
 import { loadVacancyBySlug } from '../../actions/vacancies';
@@ -11,6 +12,7 @@ function Reply(props) {
 
     const [resume, setResume] = useState(null);
     const [vacancy, setVacancy] = useState(null);
+    const [modalActive, setModalActive] = useState(false);
 
     useEffect(() => {
         loadResumeBySlug({slug: rslug})
@@ -30,9 +32,9 @@ function Reply(props) {
                             <h1>{resume.title}</h1>
                         </div>
                         <div style={{ flex: '1' }} />
-                        {vacancy.department.title === props.profile?.departments?.title ? (
+                        {props.profile.is_head && vacancy.department.title === props.profile?.departments?.title ? (
                             <div>
-                                <button className='btn btn-warning me-2' onClick={() => inviteForPosition(slug, rslug)}>
+                                <button className='btn btn-warning me-2' onClick={() => {inviteForPosition(slug, rslug); setModalActive(true)}}>
                                     Пригласить
                                 </button>
                             </div>
@@ -51,6 +53,33 @@ function Reply(props) {
                                 <div key={index}>{str ? str : <br/>}</div>
                             ))}</div>
                 </div>
+                <Modal
+                    open={modalActive}
+                    onClose={() => setModalActive(false)}
+                    aria-labelledby='modal-modal-title'
+                    aria-describedby='modal-modal-description'
+                >
+                    <Box
+                        style={{
+                            position: 'absolute',
+                            top: '50%',
+                            left: '50%',
+                            transform: 'translate(-50%, -50%)',
+                            width: '26rem',
+                            backgroundColor: '#2c892c',
+                            padding: '0.5rem',
+                            borderRadius: '0.4rem',
+                        }}
+                    >
+                        <Typography id='modal-modal-title' variant='h6' component='h2'>
+                            Вы пригласили соискателя на позицию:
+                        </Typography>
+                        <hr className='my-1' style={{ color: 'black' }} />
+                        <Typography id='modal-modal-description' sx={{ mt: 1 }}>
+                            Соискатель был <span style={{ fontWeight: 'bold' }}>уведомлен</span> о приглашении на позцию!
+                        </Typography>
+                    </Box>
+                </Modal>
             </div>
         </div>
     );

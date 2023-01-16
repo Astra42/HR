@@ -40,7 +40,7 @@ function Vacancy(props) {
                             <h1>{vacancy.title}</h1>
                         </div>
                         <div style={{ flex: '1' }} />
-                        {vacancy.department.title === props.profile?.departments?.title ? (
+                        {props.profile.is_head && vacancy.department.title === props.profile?.departments?.title ? (
                             <div>
                                 <NavLink to={`/vacancies/${slug}/replies`} className='btn btn-warning me-2'>
                                     Ответы
